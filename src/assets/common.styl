@@ -1,0 +1,36 @@
+.sub-title
+  height 34px
+  background url(@/assets/img/block-title@2x.png) left top no-repeat
+  background-size auto 100%
+  display flex
+  align-items center
+  font-size 16px
+  color #fff
+  font-weight 500
+  &>img
+    margin-left 9px
+    width 28px
+    height 28px
+
+.home-block
+  box-sizing border-box
+  border 1px solid rgba(51,187,255,0.15)
+
+bottomBg()
+  background url(@/assets/img/block-bottom@2x.png) left bottom no-repeat
+  background-size 100% auto
+
+
+
+.ellipsis-one
+  white-space nowrap
+  overflow hidden
+  text-overflow ellipsis
+
+
+ellipse-l($row)
+  display -webkit-box
+  -webkit-line-clamp $row
+  -webkit-box-orient vertical
+  overflow hidden
+  text-overflow ellipsis
