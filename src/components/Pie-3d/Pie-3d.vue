@@ -67,6 +67,7 @@ const percents = computed(() => {
   return res
 })
 
+
 let activeIndex = 0
 let pageHide = false
 

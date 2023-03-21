@@ -1,6 +1,6 @@
 <template>
   <div class="home-7">
-    <h4 class="sub-title">银行贷款产品排名</h4>
+    <h4 class="tgf-title">银行贷款产品排名</h4>
     <TransitionGroup :name="listName" tag="ul" class="list">
       <li v-for="(item, index) in ranks" :key="item.id">
         <div class="index" :style="{color: item.color}">{{ item.index }}</div>

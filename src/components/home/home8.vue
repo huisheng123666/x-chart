@@ -1,6 +1,6 @@
 <template>
   <div class="home-8">
-    <h4 class="sub-title">银行贷款利率排名</h4>
+    <h4 class="tgf-title">银行贷款利率排名</h4>
     <v-chart class="bar-line" :option="options" />
   </div>
 </template>

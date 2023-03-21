@@ -1,6 +1,6 @@
 <template>
   <div class="home-1">
-    <h4 class="sub-title">授信情况</h4>
+    <h4 class="tgf-title">授信情况</h4>
     <ul class="t-head">
       <li>类型</li>
       <li>授信笔数(笔)</li>

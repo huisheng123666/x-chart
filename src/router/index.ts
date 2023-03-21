@@ -3,7 +3,7 @@ import HomeView from '../views/home/HomeView.vue'
 import NProgress from 'nprogress'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory('/screen'),
   routes: [
     {
       path: '/',

@@ -1,6 +1,6 @@
 <template>
   <div class="home-6">
-    <h4 class="sub-title">活跃统计</h4>
+    <h4 class="tgf-title">活跃统计</h4>
     <div class="list">
       <div class="item">
         <img src="./home-6-1@2x.png" alt="">

@@ -1,6 +1,6 @@
 <template>
   <div class="home-5">
-    <h4 class="sub-title">授信金额与户数</h4>
+    <h4 class="tgf-title">授信金额与户数</h4>
     <v-chart class="bar-line" :option="options" />
     <div class="chart-ct">
       <div class="item">

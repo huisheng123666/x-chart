@@ -1,6 +1,6 @@
 <template>
   <div class="home-2">
-    <h4 class="sub-title">授信放款占比</h4>
+    <h4 class="tgf-title">授信放款占比</h4>
     <v-chart class="bar-3d" :option="options" />
     <div class="chart-ct">
       <div class="item">

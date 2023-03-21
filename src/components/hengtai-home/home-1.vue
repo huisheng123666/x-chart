@@ -172,7 +172,7 @@ const option = {
         lineHeight: 16,
         borderRadius: 8,
         backgroundColor: {
-          image: '/tree-bg.png',
+          image: 'tree-bg.png',
           width: '100%',
           height: '100%'
         }
