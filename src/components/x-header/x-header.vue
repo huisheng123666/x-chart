@@ -30,7 +30,7 @@ const timer = setInterval(() => {
     week: dayHan[day.day()],
     date: day.format('YYYY-MM-DD')
   }
-}, 1000 * 60)
+}, 1000)
 
 onUnmounted(() => {
   clearInterval(timer)
@@ -49,6 +49,7 @@ onUnmounted(() => {
     width 208px
     height 56px
   .date-time
+    margin-right 24px
     display flex
     height 36px
     align-items center

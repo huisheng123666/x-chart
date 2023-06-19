@@ -6,51 +6,72 @@
     </div>
 
     <div class="pies">
-      <pie3d style="height: 166px; width: 432px" :grid="{ left: '-30%' }" :values="chartValues" :legend="legend1" />
-      <div class="line"></div>
-      <pie3d style="height: 166px; width: 430px" :grid="{ left: '-30%' }" :values="chartValues2" :legend="legend2" />
+      <pie3d style="height: 166px; width: 520px; margin: 0 auto;" :grid="{ left: '-30%' }" :values="chartValues" :legend="legend1" />
+<!--      <div class="line"></div>-->
+<!--      <pie3d style="height: 166px; width: 430px" :grid="{ left: '-30%' }" :values="chartValues2" :legend="legend2" />-->
     </div>
     <div class="name">
       <span>资产结构分布</span>
-      <span>负债分布</span>
+      <span>资产总额：{{ data['资产总额'] }}万元</span>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import Pie3d from "@/components/Pie-3d/Pie-3d.vue";
-import {ref} from "vue";
+import {computed} from "vue";
 
-const chartValues = ref([
-  {
-    name: "所有者权益",
-    value: 160,
-    percent: '47%'
-  },
-  {
-    name: "负债",
-    value: 180,
-    percent: '53%'
-  }
-])
+const props = defineProps<{
+  data: any
+}>()
 
-const chartValues2 = ref([
-  {
-    name: "贷款",
-    value: 160,
-    percent: '47%'
-  },
-  {
-    name: "债券",
-    value: 180,
-    percent: '27%'
-  },
-  {
-    name: "其他",
-    value: 180,
-    percent: '26%'
-  }
-])
+const chartValues = computed(() => {
+  const value1 = +props.data['所有者权益'] || 0
+  const value2 = +props.data['负债'] || 0
+  const total = value1 + value2
+  const percent1 = (value1 / total * 100).toFixed(0)
+
+  return [
+    {
+      name: "所有者权益",
+      value: value1,
+      percent: percent1 + '%'
+    },
+    {
+      name: "负债",
+      value: value2,
+      percent: 100 - Number(percent1) + '%',
+      loan: props.data['贷款']
+    }
+  ]
+})
+
+const chartValues2 = computed(() => {
+  const value1 = +props.data['贷款'] || 0
+  const value2 = +props.data['债券'] || 0
+  const value3 = +props.data['其他'] || 0
+  const total = value1 + value2 + value3
+  const percent1 = (value1 / total * 100).toFixed(0)
+  const percent2 = (value2 / total * 100).toFixed(0)
+
+  return [
+    {
+      name: "贷款",
+      value: value1,
+      percent: percent1 + '%'
+    },
+    {
+      name: "债券",
+      value: value2,
+      percent: percent2 + '%'
+    },
+    {
+      name: "其他",
+      value: value3,
+      percent: 100 - +percent1 - +percent2 + '%'
+    }
+  ]
+})
 
 const legendFormatter = (name: string) => {
   const index = chartValues.value.findIndex(item => {
@@ -59,12 +80,13 @@ const legendFormatter = (name: string) => {
   return [
     `{a|${chartValues.value[index].name}}`,
     `{c|${chartValues.value[index].value}万元}`,
-    `{b|${chartValues.value[index].percent}}`
+    `{b|${chartValues.value[index].percent}}     ${index === 1 ? '贷款：' + chartValues.value[index].loan : ''}`
   ].join('')
 }
 
 const legend1 = {
   top: '25%',
+  right: -1,
   formatter: legendFormatter
 }
 
@@ -97,11 +119,12 @@ const legend2 = {
     height 160px
     background rgba(255, 255, 255, 0.1)
   .name
-    margin-top -10px
-    display flex
+    margin-top -20px
     font-size 16px
     color #FFFFFF
+    text-align center
     &>span
-      flex 1
+      display block
+      margin-top 8px
       text-align center
 </style>

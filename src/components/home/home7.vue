@@ -1,6 +1,6 @@
 <template>
   <div class="home-7">
-    <h4 class="tgf-title">银行贷款产品排名</h4>
+    <block-title title="银行贷款产品排名" />
     <TransitionGroup :name="listName" tag="ul" class="list">
       <li v-for="(item, index) in ranks" :key="item.id">
         <div class="index" :style="{color: item.color}">{{ item.index }}</div>
@@ -19,9 +19,9 @@
 </template>
 
 <script lang="ts" setup>
-import {nextTick, ref} from "vue";
-import {splitNum} from "@/common";
+import {nextTick, onMounted, ref, watch} from "vue";
 import { v4 as uuidv4 } from 'uuid';
+import BlockTitle from "@/components/home/block-title.vue";
 
 const colors = ['#2693FF', '#80C0FF', '#B3D9FF', '#FFFFFF']
 
@@ -36,46 +36,36 @@ interface RankItem {
   color: string
 }
 
-const list = [
-  {
-    name: '农业银行 | 网捷贷',
-    value: 83595
-  },
-  {
-    name: '三峡农商银行 | 云e贷',
-    value: 30644
-  },
-  {
-    name: '汉口银行 | 市民贷',
-    value: 15978
-  },
-  {
-    name: '招商银行 | 闪电贷',
-    value: 10956
-  }
-]
+const props = defineProps<{
+  list: any[]
+}>()
 
 const ranks = ref<RankItem[]>([])
+let timer = 0
 
 function genRanks(list: any[]) {
-  let big = list[0].value + list[0].value * 0.27
+  listName.value = ''
+  clearTimeout(timer)
+  const first = Number(list[0]?.applyNum.replace(/,/g, '') || 0)
+  let big = first + first * 0.27
   const res: RankItem[] = []
   list.forEach((item, index) => {
+    const num = Number(item.applyNum.replace(/,/g, '') || 0)
     res.push({
       id: uuidv4(),
       index: '0' + (index + 1),
-      name: item.name,
-      valueStr: splitNum(item.value),
-      percent: (item.value / big * 100).toFixed(0) + '%',
+      name: item.deptName + ' | ' + item.prodName,
+      valueStr: item.applyNum,
+      percent: (num / big * 100).toFixed(0) + '%',
       color: colors[index]
     })
   })
   ranks.value = res
+  nextTick(() => {
+    listName.value = 'list'
+    deleteOne()
+  })
 }
-
-genRanks(list)
-
-let timer = 0
 
 function deleteOne() {
   const item = {
@@ -89,20 +79,13 @@ function deleteOne() {
   }, 2000)
 }
 
-deleteOne()
+onMounted(() => {
+  genRanks(props.list)
+})
 
-setTimeout(() => {
-  listName.value = ''
-  clearTimeout(timer)
-  list.forEach(item => {
-    item.value += 10956
-  })
-  nextTick(() => {
-    listName.value = 'list'
-    deleteOne()
-  })
-  genRanks(list)
-}, 2000)
+watch(() => props.list, (newVal) => {
+  genRanks(props.list)
+})
 </script>
 
 <style scoped lang="stylus">

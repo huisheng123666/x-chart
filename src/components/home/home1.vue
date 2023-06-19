@@ -1,19 +1,19 @@
 <template>
   <div class="home-1">
-    <h4 class="tgf-title">授信情况</h4>
+    <block-title title="授信情况" />
     <ul class="t-head">
       <li>类型</li>
       <li>授信笔数(笔)</li>
       <li>授信总额(万元)</li>
     </ul>
-    <TransitionGroup name="list" tag="div" class="list">
+    <TransitionGroup :name="slideName" tag="div" class="list">
       <div class="h1-item" v-for="item in list" :key="item.id">
         <div class="col">
           <img :src="item.icon" alt="">
-          {{ item.name }}
+          {{ item.prodName }}
         </div>
-        <div class="col">{{ item.num1 }}</div>
-        <div class="col">{{ item.num2 }}</div>
+        <div class="col">{{ item.creditNum }}</div>
+        <div class="col">{{ item.creditAmt }}</div>
       </div>
     </TransitionGroup>
   </div>
@@ -23,31 +23,60 @@
 import icon1 from './home-1-1@2x.png'
 import icon2 from './home-1-2@2x.png'
 import icon3 from './home-1-3@2x.png'
-import {ref} from "vue";
+import {nextTick, onMounted, ref, watch} from "vue";
+import BlockTitle from "@/components/home/block-title.vue";
 
-const list = ref([
+const props = defineProps<{
+  data: any
+}>()
+
+const list = ref<any[]>([
   {
-    id: 1,
-    name: '政策类经营贷',
-    num1: '20,867',
-    num2: '383,112',
-    icon: icon1
+    "id": 1,
+    "prodName": "商业类经营贷",
+    "creditNum": "2,598",
+    "creditAmt": "4,093,789",
+    "icon": icon2
   },
   {
-    id: 2,
-    name: '商业类经营贷',
-    num1: '1,348',
-    num2: '1,278,100',
-    icon: icon2
+    "id": 2,
+    "prodName": "政策类经营贷",
+    "creditNum": "68,401",
+    "creditAmt": "1,352,457",
+    "icon": icon1
   },
   {
-    id: 3,
-    name: '消费贷',
-    num1: '17,053',
-    num2: '123,122',
-    icon: icon3
+    "id": 3,
+    "prodName": "消费贷",
+    "creditNum": "58,596",
+    "creditAmt": "161,467",
+    "icon": icon3
   }
 ])
+
+let timer = 0
+
+const slideName = ref('')
+
+function genList() {
+  slideName.value = ''
+  clearTimeout(timer)
+  const listTm = []
+  let id = 0
+  for (const key in props.data) {
+    id++
+    listTm.push({
+      id,
+      ...props.data[key],
+      icon: key === '政策类经营贷' ? icon1 : key === '商业类经营贷' ? icon2 : icon3
+    })
+  }
+  list.value = listTm
+  nextTick(() => {
+    slideName.value = 'list'
+  })
+  deleteOne()
+}
 
 function deleteOne() {
   const item = {
@@ -55,13 +84,21 @@ function deleteOne() {
     id: Date.now()
   }
   list.value.push(item)
-  setTimeout(() => {
+  timer = setTimeout(() => {
     list.value.splice(0, 1)
     deleteOne()
   }, 2000)
 }
 
-deleteOne()
+onMounted(() => {
+  if (Object.keys(props.data).length) {
+    genList()
+  }
+})
+
+watch(() => props.data, () => {
+  genList()
+})
 </script>
 
 <style scoped lang="stylus">

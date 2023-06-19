@@ -19,6 +19,8 @@ import {
 } from 'echarts/components'
 import VueECharts from 'vue-echarts'
 
+// appendSwiper()
+
 use([
   CanvasRenderer,
   PieChart,
@@ -41,3 +43,14 @@ app.use(router)
 app.component('v-chart', VueECharts)
 
 app.mount('#app')
+
+function appendSwiper() {
+  const base = import.meta.env.BASE_URL === '/' ? '' : import.meta.env.BASE_URL
+  const css = document.createElement('link')
+  css.rel = 'stylesheet'
+  css.href = base + '/swiper.min.css'
+  document.head.appendChild(css)
+  const script = document.createElement('script')
+  script.src = base + '/swiper.min.js'
+  document.head.appendChild(script)
+}

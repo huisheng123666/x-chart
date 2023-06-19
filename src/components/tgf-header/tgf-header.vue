@@ -1,45 +1,17 @@
 <template>
   <div class="header">
     <img src="./logo@2x.png" alt="">
-    <router-link to="/tgf" style="margin-right: 32px">大厅概况</router-link>
-    <router-link to="/pion">创业贷</router-link>
-    <div style="width: 720px"></div>
-    <router-link to="/pion" style="margin-right: 32px">运行数据</router-link>
-    <router-link to="/pion">信用贷</router-link>
-    <div class="date-time">
-      <p>{{ dateTime.time }}</p>
-      <div class="date">
-        周{{ dateTime.week }}<br>
-        {{ dateTime.date }}
-      </div>
-    </div>
+<!--    <router-link to="/tgf" style="margin-right: 32px">大厅概况</router-link>-->
+<!--    <router-link to="/pion">创业贷</router-link>-->
+    <div style="flex: 1"></div>
+<!--    <router-link to="/pion" style="margin-right: 32px">运行数据</router-link>-->
+<!--    <router-link to="/pion">信用贷</router-link>-->
+    <date-time style="margin-right: 30px" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import dayjs from "dayjs";
-import {onUnmounted, ref} from "vue";
-
-const dayHan = ['日', '一', '二', '三', '四', '五', "六"]
-
-const dateTime = ref({
-  time: dayjs().format('HH:mm'),
-  week: dayHan[dayjs().day()],
-  date: dayjs().format('YYYY-MM-DD')
-})
-
-const timer = setInterval(() => {
-  const day = dayjs()
-  dateTime.value = {
-    time: day.format('HH:mm'),
-    week: dayHan[day.day()],
-    date: day.format('YYYY-MM-DD')
-  }
-}, 1000 * 60)
-
-onUnmounted(() => {
-  clearInterval(timer)
-})
+import DateTime from "@/components/date-time/date-time.vue";
 </script>
 
 <style scoped lang="stylus">
@@ -80,17 +52,4 @@ onUnmounted(() => {
         background url(./triangle@2x.png) center center no-repeat
         background-size contain
         box-shadow 0 2px 8px 1px #FFBB32
-  .date-time
-    display flex
-    height 36px
-    align-items center
-    margin-left 47px
-    margin-top 36px
-    color #fff
-    &>p
-      margin-right 16px
-      font-size 32px
-    .date
-      line-height 16px
-      font-size 12px
 </style>

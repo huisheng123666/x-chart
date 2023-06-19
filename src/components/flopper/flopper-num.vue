@@ -11,10 +11,10 @@ import {onMounted, ref} from "vue";
 
 const props = defineProps<{
   num: string
-  default?: number
+  default?: number | string
 }>()
 
-let current = ref(props.default || 0)
+let current = ref(/\d/.test(props.default?.toString() || '') ? props.default as number : 0)
 
 
 const transformStyle = ref({

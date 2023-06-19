@@ -1,6 +1,6 @@
 <template>
   <div class="home-2">
-    <h4 class="tgf-title">授信放款占比</h4>
+    <block-title title="授信放款占比" />
     <v-chart class="bar-3d" :option="options" />
     <div class="chart-ct">
       <div class="item">
@@ -17,11 +17,31 @@
 
 <script lang="ts" setup>
 // legend
+import BlockTitle from "@/components/home/block-title.vue";
+import {computed} from "vue";
+import {formatNum} from "@/common";
+
+const props = defineProps<{
+  data: any
+}>()
+
 const XArr = ["创业贷", "企贷通", "消费贷"];
 // 第一条数据
-let data1 = [300000, 100000, 150000];
+let data1 = computed(() => {
+  return [
+    Number(props.data['政策类经营贷']?.creditAmt.replace(/,/g, '')) || 0,
+    Number(props.data['商业类经营贷']?.creditAmt.replace(/,/g, '')) || 0,
+    Number(props.data['消费贷']?.creditAmt.replace(/,/g, '')) || 0
+  ]
+});
 // 第二条数据
-let data2 = [200000, 300000, 250000];
+let data2 = computed(() => {
+  return [
+    props.data['政策类经营贷']?.signAmt || 0,
+    props.data['商业类经营贷']?.signAmt || 0,
+    props.data['消费贷']?.signAmt || 0
+  ]
+});
 // 黄色
 const colors = [
   {
@@ -81,153 +101,155 @@ const colorsPlan = [
 let barWidth = 28,
   symbolSizeTop = 14,
   symbolOffsetX = 16.8;
-const options = {
-  grid: {
-    top: 60,
-    left: '1%',
-    right: 0,
-    bottom: 20,
-    containLabel: true,
-  },
-  animationDuration: 2000,
-  tooltip: {
-    show: true,
-    trigger: 'axis',
-    axisPointer: {
-      type: 'shadow'
+const options = computed(() => {
+  return {
+    grid: {
+      top: 60,
+      left: '1%',
+      right: 0,
+      bottom: 20,
+      containLabel: true,
     },
-    borderColor: '#2693FF',
-    padding: 5,
-    backgroundColor: '#00111A',
-    textStyle: {
-      color: '#fff'
-    },
-    formatter: (params: any[]) => {
-      const arr = []
-      for (let i = 0; i < params.length; i+=3) {
-        arr.push({
-          value: params[i].data,
-          color: params[i].color.colorStops[0].color
+    animationDuration: 2000,
+    tooltip: {
+      show: true,
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow'
+      },
+      borderColor: '#2693FF',
+      padding: 5,
+      backgroundColor: '#00111A',
+      textStyle: {
+        color: '#fff'
+      },
+      formatter: (params: any[]) => {
+        const arr = []
+        for (let i = 0; i < params.length; i+=3) {
+          arr.push({
+            value: params[i].data,
+            color: params[i].color.colorStops[0].color
+          })
+        }
+        let str = ''
+        arr.forEach(item => {
+          str += `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:${item.color
+          };"></span>${formatNum(item.value) + '万元'}<br/>`
         })
+        return str
       }
-      let str = ''
-      arr.forEach(item => {
-        str += `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:${item.color
-        };"></span>${item.value + '万元'}<br/>`
-      })
-      return str
-    }
-  },
-  xAxis: {
-    type: "category",
-    data: XArr,
-    axisLine: {
-      //坐标轴线颜色
-      lineStyle: {
-        color: "#626361",
+    },
+    xAxis: {
+      type: "category",
+      data: XArr,
+      axisLine: {
+        //坐标轴线颜色
+        lineStyle: {
+          color: "#626361",
+        },
+      },
+      axisLabel: {
+        margin: 16,
+        color: "#919599", //坐标的字体颜色
+        fontSize: 14,
+      },
+      axisTick: {
+        //坐标轴刻度颜色
+        show: false,
       },
     },
-    axisLabel: {
-      margin: 16,
-      color: "#919599", //坐标的字体颜色
-      fontSize: 14,
+    yAxis: {
+      type: "value",
+      name: '万元' + '  ',
+      nameLocation: 'end',
+      nameTextStyle: {
+        color: '#919599',
+        align: 'right',
+        fontSize: 14
+      },
+      nameGap: 25,
+      //设置网格线颜色
+      splitLine: {
+        show: false
+      },
+      axisLabel: {
+        color: "#919599", //坐标的字体颜色
+        fontSize: 14,
+      },
     },
-    axisTick: {
-      //坐标轴刻度颜色
-      show: false,
-    },
-  },
-  yAxis: {
-    type: "value",
-    name: '万元' + '  ',
-    nameLocation: 'end',
-    nameTextStyle: {
-      color: '#919599',
-      align: 'right',
-      fontSize: 14
-    },
-    nameGap: 25,
-    //设置网格线颜色
-    splitLine: {
-      show: false
-    },
-    axisLabel: {
-      color: "#919599", //坐标的字体颜色
-      fontSize: 14,
-    },
-  },
-  series: [
-    // 第一条数据进度柱子
-    {
-      name: 'bar1',
-      type: "bar",
-      barWidth: barWidth,
-      stack: "1",
-      itemStyle: {
+    series: [
+      // 第一条数据进度柱子
+      {
+        name: 'bar1',
+        type: "bar",
+        barWidth: barWidth,
+        stack: "1",
+        itemStyle: {
+          color: colorsPlan[0],
+          borderRadius: 0,
+        },
+        data: data1.value,
+      },
+      // 第一条数据上面正方形：颜色
+      {
+        name: 'bar1',
+        type: "pictorialBar",
+        symbol: "diamond",
+        symbolSize: [barWidth, symbolSizeTop],
+        symbolOffset: [-symbolOffsetX, -symbolSizeTop / 2],
+        symbolPosition: "end",
+        z: 12,
+        color: "#9ACDFF",
+        data: data1.value,
+      },
+      //  第一条数据底部正方形：颜色
+      {
+        name: 'bar1',
+        type: "pictorialBar",
+        symbol: "diamond",
+        symbolSize: [barWidth, symbolSizeTop],
+        symbolOffset: [-symbolOffsetX, symbolSizeTop / 2],
+        z: 12,
         color: colorsPlan[0],
-        borderRadius: 0,
+        data: data1.value,
       },
-      data: data1,
-    },
-    // 第一条数据上面正方形：颜色
-    {
-      name: 'bar1',
-      type: "pictorialBar",
-      symbol: "diamond",
-      symbolSize: [barWidth, symbolSizeTop],
-      symbolOffset: [-symbolOffsetX, -symbolSizeTop / 2],
-      symbolPosition: "end",
-      z: 12,
-      color: "#9ACDFF",
-      data: data1,
-    },
-    //  第一条数据底部正方形：颜色
-    {
-      name: 'bar1',
-      type: "pictorialBar",
-      symbol: "diamond",
-      symbolSize: [barWidth, symbolSizeTop],
-      symbolOffset: [-symbolOffsetX, symbolSizeTop / 2],
-      z: 12,
-      color: colorsPlan[0],
-      data: data1,
-    },
-    // 第二条数据进度柱子
-    {
-      name: 'bar2',
-      type: "bar",
-      stack: "2",
-      barWidth: barWidth,
-      itemStyle: {
+      // 第二条数据进度柱子
+      {
+        name: 'bar2',
+        type: "bar",
+        stack: "2",
+        barWidth: barWidth,
+        itemStyle: {
+          color: colors[0],
+        },
+        data: data2.value,
+      },
+      // 第二条数据中间正方形:颜色
+      {
+        name: 'bar2',
+        type: "pictorialBar",
+        symbol: "diamond",
+        symbolSize: [barWidth, symbolSizeTop],
+        symbolOffset: [symbolOffsetX, -symbolSizeTop / 2],
+        symbolPosition: "end",
+        z: 12,
+        color: "#9AFFF5",
+        data: data2.value,
+      },
+      // 第二条数据底部正方形
+      {
+        name: 'bar2',
+        type: "pictorialBar",
+        symbol: "diamond",
+        symbolSize: [barWidth, symbolSizeTop],
+        symbolOffset: [symbolOffsetX, symbolSizeTop / 2],
         color: colors[0],
-      },
-      data: data2,
-    },
-    // 第二条数据中间正方形:颜色
-    {
-      name: 'bar2',
-      type: "pictorialBar",
-      symbol: "diamond",
-      symbolSize: [barWidth, symbolSizeTop],
-      symbolOffset: [symbolOffsetX, -symbolSizeTop / 2],
-      symbolPosition: "end",
-      z: 12,
-      color: "#9AFFF5",
-      data: data2,
-    },
-    // 第二条数据底部正方形
-    {
-      name: 'bar2',
-      type: "pictorialBar",
-      symbol: "diamond",
-      symbolSize: [barWidth, symbolSizeTop],
-      symbolOffset: [symbolOffsetX, symbolSizeTop / 2],
-      color: colors[0],
-      z: 12,
-      data: data2,
-    }
-  ],
-};
+        z: 12,
+        data: data2.value,
+      }
+    ],
+  };
+})
 </script>
 
 <style scoped lang="stylus">

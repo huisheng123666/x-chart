@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
-import {computed, nextTick, onMounted, ref} from "vue";
+import {RouterView, useRoute} from 'vue-router'
+import {computed, onMounted, ref} from "vue";
+import {useIndexStore} from "@/stores";
+
+const { changeScale } = useIndexStore()
+
+const route = useRoute()
 
 /* --------------- 滚动 ---------------- */
 const size = ref({
@@ -26,17 +31,23 @@ function setSize() {
   }, 100)
 }
 
+let resizeTimer = 0
+
 window.addEventListener('resize', () => {
-  setSize()
+  if (resizeTimer) clearTimeout(resizeTimer)
+  resizeTimer = setTimeout(() => {
+    setSize()
+  }, 100)
 })
 
 const pageStyle = computed(() => {
-  const scale = Math.floor(size.value.width / 1920 * 100) / 100 - 0.01
+  const scale = Number((size.value.width / 1920).toString().slice(0, 9))
+  changeScale(scale)
   // console.log()
   // const left = ((size.value.width - 1920 * scale) / 2).toFixed(0) + 'px'
   return {
     transform: `scale3d(${scale}, ${scale}, 1)`,
-    height: 1080 * scale + 'px'
+    height: parseInt((1080 * scale).toString()) + 'px'
   }
 })
 
@@ -61,10 +72,14 @@ const pageStyle = computed(() => {
 //     transform: `translate3d(-50%, -50%, 0) scale3d(${scale}, ${scale}, 1)`
 //   }
 // })
+
+const isAdminPath = computed(() => route.path.indexOf('admin') >= 0)
 </script>
 
 <template>
-  <RouterView class="page" :style="pageStyle" />
+  <div :style="{height: pageStyle.height, overflow: 'hidden'}">
+    <RouterView :class="!isAdminPath ? 'page' : ''" :style="!isAdminPath ? { transform: pageStyle.transform } : {}" />
+  </div>
 </template>
 
 <style scoped lang="stylus">

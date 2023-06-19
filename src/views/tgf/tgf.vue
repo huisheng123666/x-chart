@@ -8,6 +8,68 @@ import Home6 from "@/components/home/home6.vue";
 import Home7 from "@/components/home/home7.vue";
 import Home8 from "@/components/home/home8.vue";
 import TgfHeader from "@/components/tgf-header/tgf-header.vue";
+import axios from "axios";
+import {onUnmounted, ref} from "vue";
+import {data7Tem, data8Tem} from "@/common/tgf-mock";
+
+const host = 'https://api.threegorges-financial.com'
+
+const data1 = ref<any>({})
+const data3 = ref<any>({})
+const data5 = ref<any>({})
+const data6 = ref({
+  loginUserNum: '25,303',
+  pageView: '8,520,642',
+  totalUserNum: '280,066',
+  visitUserNum: '3,557,230'
+})
+const data7 = ref<any[]>(data7Tem)
+const data8 = ref<any[]>(data8Tem)
+
+function getDataLeft() {
+  axios.post(host + '/sulac/queryCreditToLeft')
+    .then(({ data: { data } }) => {
+      data1.value = data.creditTypeMap
+      data3.value = data.distbon
+    })
+}
+
+getDataLeft()
+
+function getData5() {
+  axios.post(host + '/sulac/queryAllCreditForUserNum')
+    .then(({ data: { data } }) => {
+      data5.value = data
+    })
+}
+
+getData5()
+
+function getRight() {
+  axios.post( host + '/sulac/queryAllProdForApp')
+    .then(({ data: { data } }) => {
+      data6.value = {
+        loginUserNum: data.loginUserNum,
+        pageView: data.pageView,
+        totalUserNum: data.totalUserNum,
+        visitUserNum: data.visitUserNum
+      }
+      data7.value = data.prodList
+      data8.value = data.rateList
+    })
+}
+
+getRight()
+
+const timer = setInterval(() => {
+  getDataLeft()
+  getData5()
+  getRight()
+}, 1000 * 60 * 5)
+
+onUnmounted(() => {
+  clearInterval(timer)
+})
 </script>
 
 <template>
@@ -15,18 +77,18 @@ import TgfHeader from "@/components/tgf-header/tgf-header.vue";
     <tgf-header/>
     <div class="content">
       <div class="left">
-        <home1/>
-        <home2/>
-        <home3/>
+        <home1 :data="data1" />
+        <home2 :data="data1" />
+        <home3 :data="data3" />
       </div>
       <div class="center">
         <home4/>
-        <home5/>
+        <home5 :data="data5" />
       </div>
       <div class="right">
-        <home6/>
-        <home7/>
-        <home8/>
+        <home6 :data="data6" />
+        <home7 :list="data7" />
+        <home8 :list="data8" />
       </div>
     </div>
   </div>

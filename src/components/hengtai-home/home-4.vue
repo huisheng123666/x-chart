@@ -12,17 +12,17 @@
           <img src="./left@2x.png" alt="">
           营业总收入目标
         </h6>
-        <p>8200</p>
-        <span>已完成：40%</span>
+        <p>{{ data['营业总收入目标'] }}</p>
+        <span>已完成：{{ percent.one }}</span>
       </div>
-      <div class="num">1829,999,09</div>
+      <div class="num">{{ total }}</div>
       <div class="target two">
         <h6>
           <img src="./left@2x.png" alt="">
           营业总利润目标
         </h6>
-        <p>8200</p>
-        <span>已完成：40%</span>
+        <p>{{ data['营业总利润目标'] }}</p>
+        <span>已完成：{{ percent.two }}</span>
       </div>
     </div>
 
@@ -32,7 +32,7 @@
       <img src="./right@2x.png" alt="">
     </div>
 
-    <flopper class="num-card" :num="num" />
+    <flopper class="num-card" :num="data['营业总利润']" />
 
     <div class="line"></div>
   </div>
@@ -40,13 +40,22 @@
 
 <script lang="ts" setup>
 import Flopper from "@/components/flopper/flopper.vue";
-import {ref} from "vue";
+import {computed, ref} from "vue";
+import {splitNum} from "@/common";
 
-const num = ref(1829999)
+const props = defineProps<{
+  data: any
+}>()
 
-setInterval(() => {
-  num.value += 199
-}, 5000)
+const total = computed(() => splitNum(props.data['营业总收入']))
+
+const percent = computed(() => {
+  const data = props.data
+  return {
+    one: (data['营业总收入'] / data['营业总收入目标'] * 100).toFixed(0) + '%',
+    two: (data['营业总利润'] / data['营业总利润目标'] * 100).toFixed(0) + '%',
+  }
+})
 </script>
 
 <style scoped lang="stylus">

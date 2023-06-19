@@ -1,7 +1,7 @@
 <template>
   <div class="flopper">
     <template v-for="(item, index) in currentArr" :key="item.id">
-      <flopper-num v-if="item.value !== ','" :num="item.value" :default="Number(prevArr[index].value)" />
+      <flopper-num v-if="item.value !== ',' && item.value !== '.' && item.value !== '-'" :num="item.value" :default="prevArr[index]?.value || 0" />
       <span v-else>{{ item.value }}</span>
     </template>
   </div>

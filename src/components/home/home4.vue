@@ -4,21 +4,21 @@
       <div class="item">
         <img src="./map/data-icon-1@2x.png" alt="">
         <div class="info">
-          <h6>117,401 <span>笔</span></h6>
+          <h6>{{ detail.validApplyNum }} <span>笔</span></h6>
           <p>有效申请数</p>
         </div>
       </div>
       <div class="item">
         <img src="./map/data-icon-2@2x.png" alt="">
         <div class="info">
-          <h6>39,268 <span>笔</span></h6>
+          <h6>{{ detail.totalCreditNum }} <span>笔</span></h6>
           <p>授信笔数</p>
         </div>
       </div>
       <div class="item">
         <img src="./map/data-icon-3@2x.png" alt="">
         <div class="info">
-          <h6>1,784,314 <span>笔</span></h6>
+          <h6>{{ detail.totalCreditAmt }} <span>笔</span></h6>
           <p>授信金额</p>
         </div>
       </div>
@@ -35,21 +35,21 @@
         <ul style="padding-bottom: 0">
           <li>
             <h6>授信金额</h6>
-            <p>43,542 <span>万元</span></p>
+            <p>{{ currentData?.allCreditAmt }} <span>万元</span></p>
           </li>
           <li>
             <h6>授信户数</h6>
-            <p>1,223 <span>户</span></p>
+            <p>{{ currentData?.allCreditNum }} <span>户</span></p>
           </li>
         </ul>
         <ul>
           <li>
             <h6>放款金额</h6>
-            <p>33,542 <span>万元</span></p>
+            <p>{{ currentData?.allLoanAmt }} <span>万元</span></p>
           </li>
           <li>
             <h6>放款户数</h6>
-            <p>921 <span>户</span></p>
+            <p>{{ currentData?.allLoanNum }} <span>户</span></p>
           </li>
         </ul>
       </div>
@@ -57,10 +57,10 @@
 
     <div class="float-total">
       <h6>金融机构</h6>
-      <p>20 <span>家</span></p>
+      <p>{{ detail.finDeptNum }} <span>家</span></p>
       <div class="space"></div>
       <h6>产品数量</h6>
-      <p>82 <span>款</span></p>
+      <p>{{ detail.productNum }} <span>款</span></p>
     </div>
   </div>
 </template>
@@ -75,11 +75,15 @@ import map6 from './map/6@2x.png'
 import map7 from './map/7@2x.png'
 import map8 from './map/8@2x.png'
 import map9 from './map/9@2x.png'
-import {computed, ref} from "vue";
+import {computed, onUnmounted, ref} from "vue";
+import axios from "axios";
+import {formatNum} from "@/common";
+
+const host = 'https://api.threegorges-financial.com'
 
 const imgs = [map1,  map2, map3, map4, map5, map6, map7, map8, map9]
 
-const areas = ['宜昌城区', '远安县', '当阳县', '枝江市', '宜都市', '五峰县', '长阳县', '秭归县', '兴山县']
+const areas = ['宜昌城区', '远安县', '当阳市', '枝江市', '宜都市', '五峰土家族自治县', '长阳土家族自治县', '秭归县', '兴山县']
 
 const data = ref(new Array(9).fill(1).map(item  => Number((383112 * Math.random()).toFixed(0))))
 
@@ -119,8 +123,8 @@ const positions = [
     bottom: '166px'
   },
   {
-    left: '380px',
-    bottom: '166px'
+    left: '360px',
+    bottom: '230px'
   },
   {
     left: '342px',
@@ -145,12 +149,57 @@ function animation() {
   const index = current.value >= imgs.length - 1 ? 0 : current.value + 1
   setTimeout(() => {
     current.value = index
-    data.value = new Array(9).fill(1).map(item  => Number((383112 * Math.random()).toFixed(0)))
     animation()
   }, 5000)
 }
 
 animation()
+
+const detail = ref({
+  validApplyNum: '550,620',
+  totalCreditNum: '129,598',
+  totalCreditAmt: '5,607,773',
+  finDeptNum: '26',
+  productNum: '82'
+})
+
+const cityData = ref<any>({})
+
+const currentData = computed(() => {
+  const name = areas[current.value]
+  return cityData.value[name]
+})
+
+function getData() {
+  axios.post(host + '/sulac/queryAllForArea')
+    .then(({ data: { data: dto } }) => {
+      detail.value = {
+        validApplyNum: formatNum(dto.validApplyNum),
+        totalCreditNum: formatNum(dto.totalCreditNum),
+        totalCreditAmt: formatNum(dto.totalCreditAmt),
+        finDeptNum: formatNum(dto.finDeptNum),
+        productNum: formatNum(dto.productNum)
+      }
+
+      const listMap: any = {}
+      dto.list.map((item: { cityName: string; }) => {
+        if (!item.cityName) return
+        listMap[item.cityName] = item
+      })
+      cityData.value = listMap
+      data.value = areas.map(item => Number(listMap[item].allCreditAmt.replace(/,/g, '')))
+    })
+}
+
+getData()
+
+const timer = setInterval(() => {
+  getData()
+}, 1000 * 60 * 5)
+
+onUnmounted(() => {
+  clearInterval(timer)
+})
 </script>
 
 <style scoped lang="stylus">

@@ -3,40 +3,61 @@
     <div class="sub-title">
       <img src="./title-icon@2x.png" alt="">
       市场动态
+      <p>合同总额：{{ data['汇总']['合同金额（万元）'] }}万元</p>
     </div>
-    <TransitionGroup name="list" tag="div" class="list">
+    <TransitionGroup :name="aniName" tag="div" class="list">
       <div class="item" v-for="item in list" :key="item.id">
-        <h6 class="ellipsis-one">《城市大脑建设合同》</h6>
-        <p>5000万元</p>
-        <span>2023-03-11</span>
+        <h6 class="ellipsis-one">《{{ item['合同名称'] }}》</h6>
+        <p>{{ item['合同金额（万元）'] }}万元</p>
+        <span>{{ item['日期'].slice(0, 10) }}</span>
       </div>
     </TransitionGroup>
   </div>
 </template>
 
 <script lang="ts" setup>
-import {onMounted, ref} from "vue";
+import {nextTick, onMounted, ref, watch} from "vue";
+import {v4} from "uuid";
+
+const props = defineProps<{
+  data: any
+}>()
 
 const list = ref<any[]>([])
 
-onMounted(() => {
-  const list1 = []
-  for (let i = 0; i < 6; i++) {
-    list1.push({
-      id: i
-    })
+let timer = 0
+const aniName = ref('')
+function init() {
+  list.value = props.data['明细'].map((item: any) => {
+    return {
+      ...item,
+      id: v4()
+    }
+  })
+  clearTimeout(timer)
+  if (list.value.length < 6) {
+    return
   }
-  list.value = list1
+  nextTick(() => {
+    aniName.value = 'list'
+  })
   deleteOne()
+}
+
+init()
+
+watch(() => props.data, () => {
+  aniName.value = ''
+  init()
 })
 
 function deleteOne() {
   const item = {
     ...list.value[0],
-    id: Date.now()
+    id: v4()
   }
   list.value.push(item)
-  setTimeout(() => {
+  timer = setTimeout(() => {
     list.value.splice(0, 1)
     deleteOne()
   }, 2000)
@@ -69,6 +90,13 @@ function deleteOne() {
 .home-3
   margin-top 24px
   height 301px
+  .sub-title
+    &>p
+      padding-right 10px
+      flex 1
+      text-align right
+      font-size 14px
+      font-weight 400
   .list
     height 267px
     overflow hidden

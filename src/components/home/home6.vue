@@ -1,11 +1,11 @@
 <template>
   <div class="home-6">
-    <h4 class="tgf-title">活跃统计</h4>
+    <block-title title="活跃统计" />
     <div class="list">
       <div class="item">
         <img src="./home-6-1@2x.png" alt="">
         <div class="info">
-          <h6>1,256,139<span>人</span></h6>
+          <h6>{{ data.pageView }}<span>人</span></h6>
           <p>浏览量</p>
         </div>
       </div>
@@ -13,14 +13,14 @@
       <div class="item">
         <img src="./home-6-2@2x.png" alt="">
         <div class="info">
-          <h6>2,349,721<span>次</span></h6>
+          <h6>{{ data.totalUserNum }}<span>次</span></h6>
           <p>累计用户</p>
         </div>
       </div>
       <div class="item">
         <img src="./home-6-3@2x.png" alt="">
         <div class="info">
-          <h6>88,394<span>人</span></h6>
+          <h6>{{ data.loginUserNum }}<span>人</span></h6>
           <p>注册用户</p>
         </div>
       </div>
@@ -28,7 +28,7 @@
       <div class="item">
         <img src="./home-6-4@2x.png" alt="">
         <div class="info">
-          <h6>48,327<span>次</span></h6>
+          <h6>{{ data.visitUserNum }}<span>次</span></h6>
           <p>游客流量</p>
         </div>
       </div>
@@ -37,6 +37,11 @@
 </template>
 
 <script lang="ts" setup>
+import BlockTitle from "@/components/home/block-title.vue";
+
+defineProps<{
+  data: any
+}>()
 </script>
 
 <style scoped lang="stylus">

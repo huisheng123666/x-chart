@@ -13,11 +13,24 @@
 import { graphic } from 'echarts'
 import {computed, ref} from "vue";
 
-const data1 = ref([2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3])
-const data2 = ref([3.9, 5.9, 11.1, 18.7, 48.3, 69.2, 231.6, 46.6, 55.4, 18.4, 10.3, 0.7])
+const props = defineProps<{
+  data: any
+}>()
+
+const months = computed(() => {
+  return props.data['母公司'].map((item: any) => item['时间'].slice(5))
+})
+
+const data1 = computed(() => {
+  return props.data['母公司'].map((item: any) => item['营业收入'])
+})
+const data2 = computed(() => {
+  return props.data['母公司'].map((item: any) => item['营业利润'])
+})
 
 const option = computed(() => {
   return {
+    animationDurationUpdate: 800,
     tooltip: {
       trigger: 'axis',
       backgroundColor: 'rgba(8, 17, 38, 0.8)',
@@ -36,8 +49,8 @@ const option = computed(() => {
     },
     grid: {
       top: '25%',
-      left: '8%',
-      right: '5%',
+      left: '10%',
+      right: '3%',
       bottom: '15%'
     },
     xAxis: {
@@ -45,7 +58,7 @@ const option = computed(() => {
       nameLocation: 'middle',
       axisTick: false,
       gridIndex: 0,
-      data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+      data: months.value,
       boundaryGap: false
     },
     yAxis: {
@@ -58,7 +71,7 @@ const option = computed(() => {
         }
       },
       axisLabel: {
-        formatter: '{value}万元'
+        formatter: '{value}万元',
       }
     },
     series: [
@@ -114,46 +127,44 @@ const option = computed(() => {
   }
 })
 
+function genFormatItem(key: string, list: any[]) {
+  const copy = JSON.parse(JSON.stringify(list))
+  copy.sort((a: any, b: any) => b[key] - a[key])
+  return copy.map((item: any, index: number) => {
+    return `
+      <div class="item">
+         <label>No${index + 1}</label>
+         <p>${item['公司名称']}</p>
+         <span>${item[key]}万元</span>
+      </div>
+    `
+  }).join('')
+}
+
 function tooltipFormatter(val: any) {
+  const index = val[0].dataIndex
+  const parent = props.data['母公司'][index]
+  const month = parent['时间']
+  const list = props.data[month]
+  if (!list) return `
+        <div class="line-tooltip">
+          <h6 class="title">营业收入&nbsp;&nbsp;&nbsp;&nbsp;${parent['营业收入']}万元</h6>
+        </div>
+        <div class="line-tooltip" style="margin-top: 10px">
+          <h6 class="title">营业利润&nbsp;&nbsp;&nbsp;&nbsp;${parent['营业利润']}万元</h6>
+        </div>
+      `
   return `
         <div class="line-tooltip">
-          <h6 class="title">营业收入&nbsp;&nbsp;&nbsp;&nbsp;200万元</h6>
-          <div class="item">
-             <label>No1</label>
-             <p>宜昌大数据产业园运营管理有限公司</p>
-             <span>50万元</span>
-          </div>
-          <div class="item">
-             <label>No2</label>
-             <p>宜昌城市大脑运营管理有限公司</p>
-             <span>30万元</span>
-          </div>
-          <div class="item">
-             <label>No3</label>
-             <p>湖北三峡金融科技有限公司</p>
-             <span>20万元</span>
-          </div>
-          <div class="item">
-             <label>No4</label>
-             <p>奇安国投(湖北)科技有限公司</p>
-             <span>10万元</span>
-          </div>
+          <h6 class="title">营业收入&nbsp;&nbsp;&nbsp;&nbsp;${parent['营业收入']}万元</h6>
+          ${genFormatItem('营业收入', list)}
+        </div>
+        <div class="line-tooltip" style="margin-top: 10px">
+          <h6 class="title">营业利润&nbsp;&nbsp;&nbsp;&nbsp;${parent['营业利润']}万元</h6>
+          ${genFormatItem('营业利润', list)}
         </div>
       `
 }
-function setOptions() {
-  setTimeout(() => {
-    data1.value = data1.value.map(item => {
-      return Number((Math.random() * 300).toFixed(0))
-    })
-    data2.value = data2.value.map(item => {
-      return Number((Math.random() * 300).toFixed(0))
-    })
-    setOptions()
-  }, 5000)
-}
-
-setOptions()
 </script>
 
 <style scoped lang="stylus">

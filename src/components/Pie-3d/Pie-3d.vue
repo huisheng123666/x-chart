@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import {ref, computed, watch} from 'vue'
 import 'echarts-gl'
 
 interface ChartItem {
@@ -111,6 +111,13 @@ option.value = getPie3D(
   props.values,
   0.8
 )
+
+watch(props, () => {
+  option.value = getPie3D(
+    props.values,
+    0.8
+  )
+})
 
 animation()
 
