@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/home/HomeView.vue'
+import HomeView from '../views/index.vue'
 import NProgress from 'nprogress'
 
 const router = createRouter({
@@ -11,29 +11,24 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/tgf',
-      name: 'tgf',
-      component: () => import('@/views/tgf/tgf.vue')
+      path: '/g-map',
+      component: () => import('@/components/guozi/g-map.vue')
     },
     {
-      path: '/tgf/kanban',
-      name: 'tgf-kanban',
-      component: () => import('@/views/tgf-kanban/tgf-kanban.vue')
+      path: '/min',
+      component: () => import('@/views/min/min.vue')
+    },
+    {
+      path: '/ct',
+      component: () => import('@/views/ct/ct.vue')
+    },
+    {
+      path: '/ct/min',
+      component: () => import('@/views/ct/min.vue')
     },
     {
       path: '/test',
-      name: 'test',
       component: () => import('@/views/test.vue')
-    },
-    {
-      path: '/admin',
-      component: () => import('@/views/admin/admin.vue'),
-      children: [
-        {
-          path: "kanban",
-          component: () => import('@/views/admin/kanban.vue')
-        }
-      ]
     }
   ]
 })

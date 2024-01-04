@@ -1,129 +1,112 @@
-<script setup lang="ts">
-import XHeader from "@/components/x-header/x-header.vue";
-import Home1 from "@/components/hengtai-home/home-1.vue";
-import Home2 from "@/components/hengtai-home/home-2.vue";
-import Home3 from "@/components/hengtai-home/home-3.vue";
-import Home4 from "@/components/hengtai-home/home-4.vue";
-import Home5 from "@/components/hengtai-home/home-5.vue";
-import Home6 from "@/components/hengtai-home/home-6.vue";
-import News from "@/components/hengtai-home/news.vue";
+<script lang="ts" setup>
+import {ref} from "vue";
+import GHeader from "@/components/g-header/g-header.vue";
+import Guo1 from "@/components/guozi/guo1.vue";
+import Guo2 from "@/components/guozi/guo2.vue";
+import Guo3 from "@/components/guozi/guo3.vue";
+import Guo4 from "@/components/guozi/guo4.vue";
+import Guo5 from "@/components/guozi/guo5.vue";
+import Guo6 from "@/components/guozi/guo6.vue";
 import axios from "axios";
-import {onMounted, onUnmounted, reactive} from "vue";
-import {hentaiTemplate} from "@/common/config";
+import {guoziMock} from "@/common/guozi-mock";
+import {useRoute} from "vue-router";
 
-const homeData = reactive<any>({
-  data2: [],
-  data3: [],
-  data4: {},
-  data5: {},
-  news: {
-    '公司动态': [],
-    '决策会议': [],
-    '招标': [],
-    '市场': []
+const route = useRoute()
+
+const iframe = ref()
+
+const showDia = ref(false)
+
+const diaData = ref<any>({})
+
+const host = location.origin
+
+const detail = ref<any>(guoziMock)
+
+const table = ref<any[]>([])
+
+window.addEventListener('message', ({ data }) => {
+  if (data.type === 'area') {
+    table.value = detail.value.mapList[data.area] || []
+    showDia.value = true
+    diaData.value = data
+  }
+  if (data.type === 'needData') {
+    getData(route.query.grp as string || '产投集团')
   }
 })
 
-function genData(data: any) {
-  homeData.data2 = data['项目']
-  homeData.data3 = data['市场']
-  const realData4 = data['财务概况'][0]
-  if (realData4) {
-    homeData.data4 = realData4
-  }
-  if (data['利润趋势']) {
-    homeData.data5 = data['利润趋势']
-  }
-  if (data['公司动态']) {
-    homeData.news['公司动态'] = data['公司动态']
-  }
-  if (data['决策会议']) {
-    homeData.news['决策会议'] = data['决策会议']
-  }
-  if (data['招标']) {
-    homeData.news['招标'] = data['招标']
-  }
-  if (data['市场']) {
-    homeData.news['市场'] = data['市场']['明细']
-  }
-}
-
-genData(hentaiTemplate)
-
-function getData() {
-  const base = import.meta.env.DEV ? '' : '/htdp'
-  axios.get(base + '/api/gzw/yqyp/htmh')
+function getData(name = '产投集团') {
+  axios.get(`http://10.27.38.3:8091/api/gzw/zhdp?group_name=${name}`)
     .then(res => {
-      if (res.data.code === 1) {
-        genData(res.data.data)
-      }
+      detail.value = res.data.data
+      iframe.value?.contentWindow.postMessage({ type: 'mapData', data: res.data.data }, '*')
     })
 }
-
-let timer = 0
-
-onMounted(() => {
-  getData()
-
-  timer = setInterval(() => {
-    getData()
-  }, 1000 * 60)
-})
-
-onUnmounted(() => {
-  clearInterval(timer)
-})
 </script>
 
 <template>
   <div class="home">
-    <x-header/>
+    <g-header @change="getData" :name="detail.sumList[0].zh_full_name" />
     <div class="content">
       <div class="left">
-        <home-1/>
-        <home-2 :data="homeData.data2" />
-<!--        <home-3 :data="homeData.data3" />-->
+        <guo1 :data="detail.sumList[0]" />
+        <guo2 :data="detail.sumList[0]" />
+        <guo3 :data="detail.sumList[0]" />
       </div>
       <div class="center">
-        <home-4 :data="homeData.data4" />
-        <home-5 :data="homeData.data5" />
-        <home-6 :data="homeData.data4" />
+        <iframe ref="iframe" class="map" :src="host + '/g-map'" />
       </div>
       <div class="right">
-        <news :data="homeData.news" />
-<!--        <news :tabs="['董事会', '总经理会', '普通会']" has-center title="决策动态" :data="homeData.news['决策会议']" />-->
-<!--        <news :tabs="['公告', '制度', '新闻']" title="公司动态" :data="homeData.news['公司动态']" />-->
+        <guo4 :data="detail.sumList[0]" />
+        <guo5 :data="detail.sumList[0]" />
+        <guo6 :data="detail.zdxmList" />
       </div>
     </div>
+
+    <el-dialog
+      :title="diaData.area + '所属企业'"
+      v-model="showDia"
+      @close="showDia = false"
+      :width="1200"
+      append-to-body
+    >
+      <el-table size="large" :data="table">
+        <el-table-column label="单位名称" prop="zh_full_name" width="220" show-overflow-tooltip=""></el-table-column>
+        <el-table-column label="集团名称" prop="group2_name"></el-table-column>
+        <el-table-column label="法定代表人" prop="legal_person" width="120"></el-table-column>
+        <el-table-column label="注册资本" prop="registered_assets" width="120"></el-table-column>
+        <el-table-column label="成立日期" prop="establish_date" width="120"></el-table-column>
+        <el-table-column label="本部党组织" prop="party_name" width="150"></el-table-column>
+        <el-table-column label="上级党组织" prop="high_party_name"></el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
 <style lang="stylus" scoped>
 @keyframes scaleToggle
   0%
-    background-size 100% auto, 100% 100%
+    background-size 100% 100%
   50%
-    background-size 100% auto, 120% 120%
+    background-size 120% 120%
   100%
-    background-size 100% auto, 100% 100%
+    background-size 100% 100%
 
 .home
-  background url("./head-bg@2x.png"), url(./home-bg@2x.png)
-  background-position top center, center center
-  background-size 100% auto, 100% 100%
-  background-repeat no-repeat
-  animation scaleToggle 10s ease infinite
+  box-sizing border-box
+  padding 10px
   .content
     display flex
     .left
-      margin-top 36px
-      padding-left 24px
-      width 480px
+      width 688px
       overflow hidden
     .center
-      margin 0 24px
-      width 864px
+      flex 1
+      overflow hidden
+      .map
+        width 1012px
+        height 1200px
     .right
-      margin-top 36px
-      width 480px
+      width 688px
 </style>

@@ -39,8 +39,6 @@ onUnmounted(() => {
   display flex
   height 36px
   align-items center
-  margin-left 47px
-  margin-top 36px
   color #fff
   &>p
     margin-right 16px

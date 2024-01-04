@@ -102,3 +102,11 @@ body {
 .line-tooltip .item:nth-child(4) {
   color: #B3D9FF;
 }
+
+.amap-logo {
+  display: none !important;
+}
+
+.amap-copyright {
+  display: none !important;
+}

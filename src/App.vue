@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import {RouterView, useRoute} from 'vue-router'
-import {computed, onMounted, ref} from "vue";
-import {useIndexStore} from "@/stores";
+import { RouterView, useRoute } from 'vue-router'
+import { computed, onMounted, ref } from 'vue'
+import { useIndexStore } from '@/stores'
+import { ElConfigProvider } from 'element-plus'
+import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 
 const { changeScale } = useIndexStore()
 
@@ -40,17 +42,31 @@ window.addEventListener('resize', () => {
   }, 100)
 })
 
+const routeWidth: any = {
+  '/': 2408,
+  '/min': 1376,
+  '/ct': 2408,
+  '/ct/min': 1376
+}
+
 const pageStyle = computed(() => {
-  const scale = Number((size.value.width / 1920).toString().slice(0, 9))
+  const path = route.path
+
+  if (path.indexOf('map') >= 0) {
+    return {
+      height: '100%'
+    }
+  }
+
+  const scale = Number((size.value.width / routeWidth[path]).toString().slice(0, 9))
   changeScale(scale)
   // console.log()
   // const left = ((size.value.width - 1920 * scale) / 2).toFixed(0) + 'px'
   return {
     transform: `scale3d(${scale}, ${scale}, 1)`,
-    height: parseInt((1080 * scale).toString()) + 'px'
+    height: parseInt((1290 * scale).toString()) + 'px'
   }
 })
-
 
 /* --------------- 剧中 ---------------- */
 // const size = ref({
@@ -73,24 +89,13 @@ const pageStyle = computed(() => {
 //   }
 // })
 
-const isAdminPath = computed(() => route.path.indexOf('admin') >= 0)
+const isHomePath = computed(() => route.path === '/' || route.path === '/ct')
 </script>
 
 <template>
-  <div :style="{height: pageStyle.height, overflow: 'hidden'}">
-    <RouterView :class="!isAdminPath ? 'page' : ''" :style="!isAdminPath ? { transform: pageStyle.transform } : {}" />
-  </div>
+  <el-config-provider :locale="zhCn">
+    <RouterView />
+  </el-config-provider>
 </template>
 
-<style scoped lang="stylus">
-.page
-  width 1920px
-  height 1080px
-  transform-origin left top
-  transition all 0.5s
-  // 滚动
-  //transform-origin center center
-  //position fixed
-  //left 50%
-  //top 50%
-</style>
+<style scoped lang="stylus"></style>

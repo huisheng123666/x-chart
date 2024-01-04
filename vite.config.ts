@@ -13,16 +13,16 @@ export default defineConfig({
     vue(),
     vueJsx(),
     AutoImport({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [ElementPlusResolver()]
     }),
     Components({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [ElementPlusResolver()]
     })
   ],
-  base: '/hengtai',
-  build: {
-    outDir: './admin-back/public/hengtai'
-  },
+  // base: '/hengtai',
+  // build: {
+  //   outDir: './admin-back/public/hengtai'
+  // },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
@@ -41,7 +41,7 @@ export default defineConfig({
       },
       '/hengtai/api': {
         target: 'http://localhost:3003',
-        changeOrigin: true,
+        changeOrigin: true
       }
     }
   }

@@ -27,3 +27,18 @@ export const formatNum = (num = 0) => {
     return n.replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
   });
 }
+
+export const mapOuter = (AMap: any) => [
+  new AMap.value.LngLat(-360, 90, true),
+  new AMap.value.LngLat(-360, -90, true),
+  new AMap.value.LngLat(360, -90, true),
+  new AMap.value.LngLat(360, 90, true)
+]
+
+export function sleep(time: number) {
+  return new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve()
+    }, time)
+  })
+}

@@ -9,7 +9,14 @@ import 'nprogress/nprogress.css'
 
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
-import { PieChart, BarChart, LineChart, PictorialBarChart, TreeChart } from 'echarts/charts'
+import {
+  PieChart,
+  BarChart,
+  LineChart,
+  PictorialBarChart,
+  TreeChart,
+  GaugeChart
+} from 'echarts/charts'
 import {
   TitleComponent,
   TooltipComponent,
@@ -18,6 +25,9 @@ import {
   GridComponent
 } from 'echarts/components'
 import VueECharts from 'vue-echarts'
+import DataVVue3 from '@kjgl77/datav-vue3'
+import 'element-plus/dist/index.css'
+// import 'element-plus/theme-chalk/dark/css-vars.css'
 
 // appendSwiper()
 
@@ -32,13 +42,16 @@ use([
   ToolboxComponent,
   GridComponent,
   PictorialBarChart,
-  TreeChart
+  TreeChart,
+  GaugeChart
 ])
 
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
+
+app.use(DataVVue3)
 
 app.component('v-chart', VueECharts)
 
