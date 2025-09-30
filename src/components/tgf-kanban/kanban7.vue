@@ -8,12 +8,12 @@
     <div class="list">
       <div class="item" v-for="item in list" :key="item.id">
         <div class="percent">
-          <h6>{{ item.name }} <span>{{ item.percent }}</span></h6>
+          <h6>{{ item.projectName }} <span>{{ item.projectSchedule || 0 }}%</span></h6>
           <div class="line">
-            <div class="active" :style="{width: item.percent }"></div>
+            <div class="active" :style="{width: item.projectSchedule || 0 + '%' }"></div>
           </div>
         </div>
-        <div class="btn" @click="changeCurrent(item.detail, item.name)">查看详情</div>
+        <div class="btn" @click="changeCurrent(item, item.projectName)">查看详情</div>
       </div>
       <div style="height: 20px"></div>
     </div>

@@ -26,7 +26,6 @@ declare module '@vue/runtime-core' {
     ElOption: typeof import('element-plus/es')['ElOption']
     ElSelect: typeof import('element-plus/es')['ElSelect']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
-    ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     Flopper: typeof import('./src/components/flopper/flopper.vue')['default']
     FlopperNum: typeof import('./src/components/flopper/flopper-num.vue')['default']

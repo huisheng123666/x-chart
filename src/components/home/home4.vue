@@ -2,24 +2,33 @@
   <div class="home-4">
     <div class="top-data">
       <div class="item">
-        <img src="./map/data-icon-1@2x.png" alt="">
         <div class="info">
           <h6>{{ detail.validApplyNum }} <span>笔</span></h6>
           <p>有效申请数</p>
         </div>
       </div>
       <div class="item">
-        <img src="./map/data-icon-2@2x.png" alt="">
         <div class="info">
           <h6>{{ detail.totalCreditNum }} <span>笔</span></h6>
           <p>授信笔数</p>
         </div>
       </div>
       <div class="item">
-        <img src="./map/data-icon-3@2x.png" alt="">
         <div class="info">
-          <h6>{{ detail.totalCreditAmt }} <span>笔</span></h6>
+          <h6>{{ detail.totalCreditAmt }} <span>万元</span></h6>
           <p>授信金额</p>
+        </div>
+      </div>
+      <div class="item">
+        <div class="info">
+          <h6>{{ detail.allLoanNum }} <span>笔</span></h6>
+          <p>放款笔数</p>
+        </div>
+      </div>
+      <div class="item">
+        <div class="info">
+          <h6>{{ detail.allLoanAmt }} <span>万元</span></h6>
+          <p>放款金额</p>
         </div>
       </div>
     </div>
@@ -57,10 +66,10 @@
 
     <div class="float-total">
       <h6>金融机构</h6>
-      <p>{{ detail.finDeptNum }} <span>家</span></p>
+      <p>{{ productData.financialInstitutionNum }} <span>家</span></p>
       <div class="space"></div>
       <h6>产品数量</h6>
-      <p>{{ detail.productNum }} <span>款</span></p>
+      <p>{{ productData.financialProductNum }} <span>款</span></p>
     </div>
   </div>
 </template>
@@ -160,7 +169,9 @@ const detail = ref({
   totalCreditNum: '129,598',
   totalCreditAmt: '5,607,773',
   finDeptNum: '26',
-  productNum: '82'
+  productNum: '82',
+  allLoanAmt: '470,380,4',
+  allLoanNum: '693,60'
 })
 
 const cityData = ref<any>({})
@@ -178,7 +189,9 @@ function getData() {
         totalCreditNum: formatNum(dto.totalCreditNum),
         totalCreditAmt: formatNum(dto.totalCreditAmt),
         finDeptNum: formatNum(dto.finDeptNum),
-        productNum: formatNum(dto.productNum)
+        productNum: formatNum(dto.productNum),
+        allLoanAmt: formatNum(dto.allLoanAmt),
+        allLoanNum: formatNum(dto.allLoanNum)
       }
 
       const listMap: any = {}
@@ -193,8 +206,20 @@ function getData() {
 
 getData()
 
+const productData = ref<any>({})
+
+function getProductNum() {
+  axios.get('https://api.threegorges-financial.com/yxr/home')
+    .then(res => {
+      productData.value = res.data.data.initData
+    })
+}
+
+getProductNum()
+
 const timer = setInterval(() => {
   getData()
+  getProductNum()
 }, 1000 * 60 * 5)
 
 onUnmounted(() => {
@@ -229,7 +254,6 @@ onUnmounted(() => {
     left 0
     top 24px
     width 100%
-    padding 0 102px
     display flex
     justify-content space-between
     .item

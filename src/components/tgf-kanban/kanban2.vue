@@ -10,14 +10,14 @@
         <div class="item">
           <img src="./kanban2-1@2x.png" alt="">
           <div class="info">
-            <h6>{{ splitNum(data.num1) }} <span>万元</span></h6>
+            <h6>{{ splitNum(data?.service) }} <span>万元</span></h6>
             <p>服务费收入</p>
           </div>
         </div>
         <div class="item">
           <img src="./kanban2-2@2x.png" alt="">
           <div class="info">
-            <h6>{{ splitNum(data.num2) }} <span>万元</span></h6>
+            <h6>{{ splitNum(data?.contract) }} <span>万元</span></h6>
             <p>合同签约金额</p>
           </div>
         </div>
@@ -27,14 +27,14 @@
         <div class="item">
           <img src="./kanban2-3@2x.png" alt="">
           <div class="info">
-            <h6>{{ splitNum(data.num3) }} <span>万元</span></h6>
+            <h6>{{ splitNum(data?.project) }} <span>万元</span></h6>
             <p>项目建设收入</p>
           </div>
         </div>
         <div class="item">
           <img src="./kanban2-4@2x.png" alt="">
           <div class="info">
-            <h6>{{ splitNum(data.num4) }} <span>万元</span></h6>
+            <h6>{{ splitNum(data?.bonus) }} <span>万元</span></h6>
             <p>奖补资金</p>
           </div>
         </div>

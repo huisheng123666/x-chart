@@ -37,6 +37,7 @@ const chartValues = computed(() => {
   const list: any[] = []
   for (let i = 1; i < 4; i++) {
     const item = props.data[i]
+    if (!item) continue
     list.push({
       name: item.typeName,
       value: item.proportion,

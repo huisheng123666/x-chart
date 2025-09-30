@@ -54,7 +54,7 @@ const option = computed(() => {
         radius: [58, 80],
         center: ['50%', '40%'],
         roseType: 'radius',
-        data: props.data.map((item: { value: any; label: any; }) => ({ value: item.value, name: item.label })),
+        data: props.data?.map((item: any) => ({ value: item.count, name: item.name })),
         labelLine: {
           length: 20,
           length2: 40

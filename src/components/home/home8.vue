@@ -8,6 +8,7 @@
 <script lang="ts" setup>
 import {computed, ref} from "vue";
 import BlockTitle from "@/components/home/block-title.vue";
+import { v4 as uuid } from 'uuid'
 
 const props = defineProps<{
   list: any[]
@@ -16,8 +17,10 @@ const props = defineProps<{
 const startIndex = ref(0)
 const lastIndex = ref(5)
 
+console.log(props.list)
+
 const XArr = computed(() => {
-  return props.list?.slice(startIndex.value, lastIndex.value).map(item => item.deptNAME) || []
+  return props.list?.slice(startIndex.value, lastIndex.value).map(item => `${item.deptNAME}&${uuid()}`) || []
 });
 const XArr1 = computed(() => {
   return props.list?.slice(startIndex.value, lastIndex.value).map(item => item.productName) || []
@@ -35,7 +38,7 @@ setInterval(() => {
     startIndex.value = 0
     lastIndex.value = 5
   }
-}, 4000)
+}, 6000)
 // 蓝色
 const colorsPlan = [
   {
@@ -119,6 +122,10 @@ const commonConfig = computed(() => {
         margin: 16,
         color: "#919599", //坐标的字体颜色
         fontSize: 14,
+        formatter: (val: string) => {
+          const labelArr = val.split('&')
+          return labelArr[0]
+        }
       },
       axisTick: {
         //坐标轴刻度颜色

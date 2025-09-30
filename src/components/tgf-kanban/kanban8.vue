@@ -5,15 +5,15 @@
       获得资质
     </div>
 
-    <el-tooltip :content="data.desc" raw-content placement="top">
-      <div class="info" v-html="data.desc"></div>
-    </el-tooltip>
+    <div class="info">
+      三峡金科目前已获得<span>“国家高新技术企业”</span>认<br/><span>{{ data.gxjs || 0 }}项</span>计算机软件著作权登记证书及<br><span>{{ data.zlzs || 0 }}项</span>实用新型专利证书
+    </div>
 
     <div class="swiper-container">
       <div class="swiper-wrapper">
-        <div class="swiper-slide" v-for="item in data.imgs" :key="item">
-          <img :src="item.url" alt="">
-          <div class="cover" v-if="active !== item"></div>
+        <div class="swiper-slide" v-for="(item, index) in imgs" :key="item">
+          <img :src="item" alt="">
+          <div class="cover" v-if="active !== index + 1"></div>
         </div>
       </div>
 
@@ -21,7 +21,7 @@
       <div class="swiper-button-next"></div>
     </div>
 
-    <p class="index">{{ active }} / {{ data.imgs.length }}</p>
+    <p class="index">{{ active }} / {{ imgs.length }}</p>
   </div>
 </template>
 
@@ -29,10 +29,8 @@
 import {nextTick, onMounted, ref, watch} from "vue";
 
 const props = defineProps<{
-  data: {
-    desc: string
-    imgs: any[]
-  }
+  data: any,
+  imgs: string[]
 }>()
 
 const active = ref(1)
@@ -40,18 +38,20 @@ const active = ref(1)
 let swiper: any = null
 
 onMounted(() => {
-  createSwiper()
+  setTimeout(() => {
+    createSwiper()
+  }, 100)
 })
 
 function createSwiper() {
-  if (!props.data.imgs.length) return
+  if (!props.imgs.length) return
   /* @ts-ignore */
   swiper = new window.Swiper('.swiper-container', {
     watchSlidesProgress: true,
     slidesPerView: 'auto',
     centeredSlides: true,
     loop: true,
-    loopedSlides: props.data.imgs.length,
+    loopedSlides: props.imgs.length,
     autoplay: true,
     speed: 500,
     navigation: {
@@ -97,7 +97,7 @@ function createSwiper() {
   })
 }
 
-watch(() => props.data, () => {
+watch(() => props.data.imgs, () => {
   swiper?.destroy()
   nextTick(() => {
     createSwiper()

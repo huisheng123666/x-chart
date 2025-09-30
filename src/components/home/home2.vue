@@ -5,11 +5,11 @@
     <div class="chart-ct">
       <div class="item">
         <div class="icon one"/>
-        <p>授信金额</p>
+        <p>授信笔数</p>
       </div>
       <div class="item">
         <div class="icon two"/>
-        <p>放款金额</p>
+        <p>放款笔数</p>
       </div>
     </div>
   </div>
@@ -25,21 +25,21 @@ const props = defineProps<{
   data: any
 }>()
 
-const XArr = ["创业贷", "企贷通", "消费贷"];
+const XArr = ["创业贷", "消费贷", "银企专区"];
 // 第一条数据
 let data1 = computed(() => {
   return [
-    Number(props.data['政策类经营贷']?.creditAmt.replace(/,/g, '')) || 0,
-    Number(props.data['商业类经营贷']?.creditAmt.replace(/,/g, '')) || 0,
-    Number(props.data['消费贷']?.creditAmt.replace(/,/g, '')) || 0
+    Number(props.data['创业贷']?.creditNum.replace(/,/g, '')) || 0,
+    Number(props.data['消费贷']?.creditNum.replace(/,/g, '')) || 0,
+    Number(props.data['银企专区']?.creditNum.replace(/,/g, '')) || 0
   ]
 });
 // 第二条数据
 let data2 = computed(() => {
   return [
-    props.data['政策类经营贷']?.signAmt || 0,
-    props.data['商业类经营贷']?.signAmt || 0,
-    props.data['消费贷']?.signAmt || 0
+    props.data['创业贷']?.fkrs || 0,
+    props.data['消费贷']?.fkrs || 0,
+    props.data['银企专区']?.fkrs || 0
   ]
 });
 // 黄色
@@ -134,7 +134,7 @@ const options = computed(() => {
         let str = ''
         arr.forEach(item => {
           str += `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:${item.color
-          };"></span>${formatNum(item.value) + '万元'}<br/>`
+          };"></span>${formatNum(item.value) + '笔'}<br/>`
         })
         return str
       }
@@ -160,7 +160,7 @@ const options = computed(() => {
     },
     yAxis: {
       type: "value",
-      name: '万元' + '  ',
+      name: '笔' + '  ',
       nameLocation: 'end',
       nameTextStyle: {
         color: '#919599',

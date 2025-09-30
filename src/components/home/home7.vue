@@ -1,9 +1,9 @@
 <template>
   <div class="home-7">
-    <block-title title="银行贷款产品排名" />
+    <block-title title="消费贷申请排名" />
     <TransitionGroup :name="listName" tag="ul" class="list">
       <li v-for="(item, index) in ranks" :key="item.id">
-        <div class="index" :style="{color: item.color}">{{ item.index }}</div>
+        <div class="index">{{ item.index }}</div>
         <div class="right">
           <div class="top">
             <h6>{{ item.name }}</h6>
@@ -23,7 +23,7 @@ import {nextTick, onMounted, ref, watch} from "vue";
 import { v4 as uuidv4 } from 'uuid';
 import BlockTitle from "@/components/home/block-title.vue";
 
-const colors = ['#2693FF', '#80C0FF', '#B3D9FF', '#FFFFFF']
+const colors = ['#2693FF', '#80C0FF', '#B3D9FF', '#FFFFFF', '#FFFFFF']
 
 const listName = ref('list')
 
@@ -137,6 +137,7 @@ watch(() => props.list, (newVal) => {
         background rgba(38, 147, 255, 0.1)
         font-size 14px
         font-weight bold
+        color #fff
       .right
         flex 1
         .top

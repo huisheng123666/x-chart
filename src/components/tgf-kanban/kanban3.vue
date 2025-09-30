@@ -10,14 +10,14 @@
         <div class="item">
           <img src="./kanban3-1@2x.png" alt="">
           <div class="info">
-            <h6>{{ splitNum(data.num1) }} <span>个</span></h6>
+            <h6>{{ splitNum(data?.organization) }} <span>个</span></h6>
             <p>入驻机构</p>
           </div>
         </div>
         <div class="item">
           <img src="./kanban3-2@2x.png" alt="">
           <div class="info">
-            <h6>{{ splitNum(data.num2) }} <span>万元</span></h6>
+            <h6>{{ splitNum(data?.financing) }} <span>万元</span></h6>
             <p>融资对接金额</p>
           </div>
         </div>
@@ -27,14 +27,14 @@
         <div class="item">
           <img src="./kanban3-3@2x.png" alt="">
           <div class="info">
-            <h6>{{ splitNum(data.num3) }} <span>次</span></h6>
+            <h6>{{ splitNum(data?.events) }} <span>次</span></h6>
             <p>活动场次</p>
           </div>
         </div>
         <div class="item">
           <img src="./kanban3-4@2x.png" alt="">
           <div class="info">
-            <h6>{{ splitNum(data.num4) }} <span>户</span></h6>
+            <h6>{{ splitNum(data?.households) }} <span>户</span></h6>
             <p>融资对接户数</p>
           </div>
         </div>

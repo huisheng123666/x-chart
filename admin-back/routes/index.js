@@ -12,7 +12,8 @@ router.get('/hengtai/*', async (ctx, next) => {
   ctx.body = fs.readFileSync('public/hengtai/index.html')
 })
 
-router.get('/json', async (ctx, next) => {
+router.post('/json', async (ctx, next) => {
+  console.log(ctx.request.body)
   ctx.body = {
     title: 'koa2 json'
   }

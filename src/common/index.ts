@@ -1,4 +1,4 @@
-export function splitNum(num: number) {
+export function splitNum(num: number | string) {
   if (num === undefined) return ''
   const numStr = num.toString()
   const last = numStr.split('.')[1] || ''

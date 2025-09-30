@@ -12,17 +12,17 @@
           <img src="./left@2x.png" alt="">
           营业总收入目标
         </h6>
-        <p>{{ data['营业总收入目标'] }}</p>
-        <span>已完成：{{ percent.one }}</span>
+        <p>{{ data.incomeAndProfit?.incomeTarget }}</p>
+        <span>已完成：{{ data.incomeAndProfit?.scaledIncome }}%</span>
       </div>
-      <div class="num">{{ total }}</div>
+      <div class="num">{{ data.incomeAndProfit?.income }}</div>
       <div class="target two">
         <h6>
           <img src="./left@2x.png" alt="">
           营业总利润目标
         </h6>
-        <p>{{ data['营业总利润目标'] }}</p>
-        <span>已完成：{{ percent.two }}</span>
+        <p>{{ data.incomeAndProfit?.profitTarget }}</p>
+        <span>已完成：{{ data.incomeAndProfit?.scaledProfit }}%</span>
       </div>
     </div>
 
@@ -32,7 +32,7 @@
       <img src="./right@2x.png" alt="">
     </div>
 
-    <flopper class="num-card" :num="data['营业总利润']" />
+    <flopper class="num-card" :num="data.incomeAndProfit?.profit || 0" />
 
     <div class="line"></div>
   </div>

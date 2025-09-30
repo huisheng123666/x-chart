@@ -8,27 +8,27 @@
     <div class="list">
       <div class="item">
         <img src="./kanban6-1@2x.png" alt="">
-        <h6>{{ splitNum(data.num1) }}<span> 笔</span></h6>
+        <h6>{{ splitNum(formatData.sqrs) }}<span> 万人(户)次</span></h6>
         <p>申请笔数</p>
       </div>
       <div class="item">
         <img src="./kanban6-2@2x.png" alt="">
-        <h6>{{ splitNum(data.num2) }}<span> 万元</span></h6>
+        <h6>{{ splitNum(formatData.LOAN_AMOUNT) }}<span> 亿元</span></h6>
         <p>授信金额</p>
       </div>
       <div class="item">
         <img src="./kanban6-3@2x.png" alt="">
-        <h6>{{ splitNum(data.num3) }}<span> 笔</span></h6>
+        <h6>{{ splitNum(formatData.sxrs) }}<span> 万人(户)次</span></h6>
         <p>授信笔数</p>
       </div>
       <div class="item">
         <img src="./kanban6-2@2x.png" alt="">
-        <h6>{{ splitNum(data.num4) }}<span> 万元</span></h6>
+        <h6>{{ splitNum(formatData.SIGN_AMOUNT) }}<span> 亿元</span></h6>
         <p>放款金额</p>
       </div>
       <div class="item">
         <img src="./kanban6-3@2x.png" alt="">
-        <h6>{{ splitNum(data.num5) }}<span> 笔</span></h6>
+        <h6>{{ splitNum(formatData.fkrs) }}<span> 万人(户)次</span></h6>
         <p>放款笔数</p>
       </div>
     </div>
@@ -37,10 +37,21 @@
 
 <script lang="ts" setup>
 import {splitNum} from "@/common";
+import {computed} from "vue";
 
-defineProps<{
+const props = defineProps<{
   data: any
 }>()
+
+const formatData = computed(() => {
+  return {
+    sqrs: (props.data.sqrs / 10000).toFixed(2),
+    LOAN_AMOUNT: (props.data.LOAN_AMOUNT / 10000).toFixed(2),
+    sxrs: (props.data.sxrs / 10000).toFixed(2),
+    SIGN_AMOUNT: (props.data.SIGN_AMOUNT / 10000).toFixed(2),
+    fkrs: (props.data.fkrs / 10000).toFixed(2),
+  }
+})
 </script>
 
 <style scoped lang="stylus">

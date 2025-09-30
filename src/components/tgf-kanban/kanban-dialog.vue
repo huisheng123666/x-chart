@@ -8,25 +8,9 @@
         <div class="block">
           <h6>基本信息</h6>
           <ul>
-            <li>
-              <label>项目经理</label>
-              <p>{{ detail.manger }}</p>
-            </li>
-            <li>
-              <label>产品经理</label>
-              <p>{{ detail.product }}</p>
-            </li>
-            <li>
-              <label>前端工程师</label>
-              <p>{{ detail.web }}</p>
-            </li>
-            <li>
-              <label>后端工程师</label>
-              <p>{{ detail.back }}</p>
-            </li>
-            <li>
-              <label>UI设计师</label>
-              <p>{{ detail.ui }}</p>
+            <li v-for="item in detail?.peoples" :key="item.name">
+              <label>{{ item.position }}</label>
+              <p>{{ item.name }}</p>
             </li>
           </ul>
         </div>
@@ -36,21 +20,21 @@
 
           <div class="tabs">
             <div
-              :class="{tab: true, active: active === 5 - i}"
-              v-for="i in 4"
-              :key="i"
-              @click="changeActive(5 - i)"
-            >Q{{ 5 - i }}</div>
+              :class="{tab: true, active: active === i.quarterName}"
+              v-for="i in detail.quarters"
+              :key="i.quarterName"
+              @click="changeActive(i.quarterName)"
+            >{{ i.quarterName }}</div>
           </div>
 
           <div class="list">
-            <div class="item" v-for="(item, index) in list" :key="item.id">
+            <div class="item" v-for="(item, index) in list" :key="item.personId">
               <div class="index">{{ index + 1 > 9 ? index + 1 : '0' + (index + 1) }}</div>
-              <div class="task" v-html="item.desc"></div>
-              <img v-if="item.finished" src="./finished@2x.png" alt="">
+              <div class="task" v-html="item.content"></div>
+<!--              <img v-if="item.finished" src="./finished@2x.png" alt="">-->
               <div class="time">
                 <h6>上线截点</h6>
-                <p>{{ item.time }}</p>
+                <p>{{ item.overTime }}</p>
               </div>
             </div>
           </div>
@@ -76,14 +60,22 @@ const emit = defineEmits<{
   (e: 'update:modelValue', val: boolean): void
 }>()
 
-const active = ref(4)
+const active = ref('Q1')
 
-function changeActive(i: number) {
+function changeActive(i: string) {
   active.value = i
 }
 
 
-const list = computed(() => props.detail['q' + active.value])
+const list = computed(() => {
+  for (let i = 0; i < props.detail.quarters.length; i++) {
+    const item = props.detail.quarters[i]
+    if (item.quarterName === active.value) {
+      return item.quarterPlan || []
+    }
+  }
+  return []
+})
 //
 // let timer = 0
 // function deleteOne() {

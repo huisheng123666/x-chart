@@ -3,18 +3,18 @@
     <kanban-header/>
     <div class="content">
       <div class="left">
-        <kanban1 :data="data.data1"/>
-        <kanban2 :data="data.data2" />
-        <kanban3 :data="data.data3" />
+        <kanban1 :data="data.personInfo"/>
+        <kanban2 :data="data.marketAndEnterprise" />
+        <kanban3 :data="data.marketAndEnterprise" />
       </div>
       <div class="center">
-        <home4 :data="data.data4" class="tgf-data" />
-        <kanban5 :list="data.data5" />
-        <kanban6 :data="data.data6" />
+        <home4 :data="data.workAndMoney || {}" class="tgf-data" />
+        <kanban5 :list="data.workAndMoney?.priorityWork || []" />
+        <kanban6 :data="data.netData ? data.netData[0] : {}" />
       </div>
       <div class="right">
-        <kanban7 :list="data.data7" />
-        <kanban8 :data="data.data8" />
+        <kanban7 :list="data.projectInfo || []" />
+        <kanban8 :data="data" :imgs="data.picList || []" />
       </div>
     </div>
   </div>
@@ -36,17 +36,30 @@ import {tgfKanbanTem} from "@/common/config";
 
 const data = ref<any>(tgfKanbanTem)
 
-function getData() {
-  axios.get('/hengtai/api/tgf/kanban')
+// function getData() {
+//   axios.get('/hengtai/api/tgf/kanban')
+//     .then(res => {
+//       data.value = res.data
+//       setTimeout(() => {
+//         getData()
+//       }, 1000 * 60)
+//     })
+// }
+//
+// getData()
+
+function getRemoteData() {
+  axios.get('https://api.threegorges-financial.com/erp/statistics/dataView')
     .then(res => {
-      data.value = res.data
-      setTimeout(() => {
-        getData()
-      }, 1000 * 60)
+      data.value = {
+        ...data.value,
+        ...res.data.data
+      }
+      console.log(res.data)
     })
 }
 
-getData()
+getRemoteData()
 </script>
 
 <style scoped lang="stylus">

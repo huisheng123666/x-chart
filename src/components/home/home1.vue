@@ -1,10 +1,10 @@
 <template>
   <div class="home-1">
-    <block-title title="授信情况" />
+    <block-title title="授信放款情况" />
     <ul class="t-head">
       <li>类型</li>
-      <li>授信笔数(笔)</li>
       <li>授信总额(万元)</li>
+      <li>放款金额(万元)</li>
     </ul>
     <TransitionGroup :name="slideName" tag="div" class="list">
       <div class="h1-item" v-for="item in list" :key="item.id">
@@ -12,8 +12,8 @@
           <img :src="item.icon" alt="">
           {{ item.prodName }}
         </div>
-        <div class="col">{{ item.creditNum }}</div>
         <div class="col">{{ item.creditAmt }}</div>
+        <div class="col">{{ formatNum(item.signAmt) }}</div>
       </div>
     </TransitionGroup>
   </div>
@@ -23,8 +23,10 @@
 import icon1 from './home-1-1@2x.png'
 import icon2 from './home-1-2@2x.png'
 import icon3 from './home-1-3@2x.png'
+import icon4 from './home-1-4.png'
 import {nextTick, onMounted, ref, watch} from "vue";
 import BlockTitle from "@/components/home/block-title.vue";
+import {formatNum} from "@/common";
 
 const props = defineProps<{
   data: any
@@ -32,27 +34,47 @@ const props = defineProps<{
 
 const list = ref<any[]>([
   {
-    "id": 1,
-    "prodName": "商业类经营贷",
-    "creditNum": "2,598",
-    "creditAmt": "4,093,789",
-    "icon": icon2
+    "id": 4,
+    "prodName": "企贷通",
+    "creditNum": "68,401",
+    "creditAmt": "1,352,457",
+    "icon": icon4,
+    signAmt: 1146016
   },
   {
     "id": 2,
-    "prodName": "政策类经营贷",
+    "prodName": "创业贷",
     "creditNum": "68,401",
     "creditAmt": "1,352,457",
-    "icon": icon1
+    "icon": icon1,
+    signAmt: 1146016
   },
   {
     "id": 3,
     "prodName": "消费贷",
     "creditNum": "58,596",
     "creditAmt": "161,467",
-    "icon": icon3
+    "icon": icon3,
+    signAmt: 6327833
+  },
+  {
+    "id": 1,
+    "prodName": "银企专区",
+    "creditNum": "2,598",
+    "creditAmt": "4,093,789",
+    "icon": icon2,
+    signAmt: 73670
   }
 ])
+
+const icons: any = {
+  企贷通: icon4,
+  创业贷: icon1,
+  消费贷: icon3,
+  银企专区: icon2
+}
+
+const keys = ['创业贷', '消费贷', '银企专区']
 
 let timer = 0
 
@@ -61,21 +83,17 @@ const slideName = ref('')
 function genList() {
   slideName.value = ''
   clearTimeout(timer)
-  const listTm = []
-  let id = 0
-  for (const key in props.data) {
-    id++
-    listTm.push({
-      id,
-      ...props.data[key],
-      icon: key === '政策类经营贷' ? icon1 : key === '商业类经营贷' ? icon2 : icon3
-    })
-  }
-  list.value = listTm
+  list.value = keys.map((item: string | number, index: any) => {
+    return {
+      id: index,
+      ...props.data[item],
+      icon: icons[item]
+    }
+  })
   nextTick(() => {
     slideName.value = 'list'
+    deleteOne()
   })
-  deleteOne()
 }
 
 function deleteOne() {
@@ -139,11 +157,12 @@ watch(() => props.data, () => {
     &>li
       color #A3BECC
       text-align right
+      font-size 15px
       &:first-child
         text-align left
-        min-width 146px
+        min-width 100px
       &:nth-child(2)
-        min-width 80px
+        flex 1
       &:nth-child(3)
         flex 1
   .list
@@ -166,7 +185,7 @@ watch(() => props.data, () => {
       text-align right
       &:first-child
         text-align left
-        min-width 146px
+        min-width 100px
         font-size 16px
         color #A3BECC
         &>img
@@ -175,7 +194,7 @@ watch(() => props.data, () => {
           height 16px
           vertical-align middle
       &:nth-child(2)
-        min-width 80px
+        flex 1
       &:nth-child(3)
         flex 1
 </style>

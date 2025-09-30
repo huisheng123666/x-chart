@@ -8,8 +8,8 @@
     <TransitionGroup name="list" tag="div" class="list">
       <div class="item" v-for="item in list" :key="item.id">
         <label>{{ item.index }}</label>
-        <p class="ellipsis-one" :title="item.title">{{ item.title }}</p>
-        <img v-if="item.finished" src="./finished@2x.png" alt="">
+        <p class="ellipsis-one" :title="item.workItem">{{ item.workItem }}</p>
+        <img v-if="item.status === '1'" src="./finished@2x.png" alt="">
       </div>
     </TransitionGroup>
   </div>

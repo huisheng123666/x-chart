@@ -35,6 +35,20 @@ export const data8Tem = [
     "productName": "抗疫复工贷"
   },
   {
+    "deptNAME": "中国银行",
+    "StartRate": 3.75,
+    "interest": 3.75,
+    "ENDRATE": 3.75,
+    "productName": "烟草贷"
+  },
+  {
+    "deptNAME": "中国银行",
+    "StartRate": 3.85,
+    "interest": 3.85,
+    "ENDRATE": 3.85,
+    "productName": "税易贷"
+  },
+  {
     "deptNAME": "汉口银行",
     "StartRate": 2.5,
     "interest": 3.53,
@@ -70,25 +84,11 @@ export const data8Tem = [
     "productName": "兴e贴"
   },
   {
-    "deptNAME": "中国银行",
-    "StartRate": 3.75,
-    "interest": 3.75,
-    "ENDRATE": 3.75,
-    "productName": "烟草贷"
-  },
-  {
     "deptNAME": "工商银行",
     "StartRate": 3.05,
     "interest": 3.75,
     "ENDRATE": 4.45,
     "productName": "网贷通"
-  },
-  {
-    "deptNAME": "中国银行",
-    "StartRate": 3.85,
-    "interest": 3.85,
-    "ENDRATE": 3.85,
-    "productName": "税易贷"
   },
   {
     "deptNAME": "广发银行",
