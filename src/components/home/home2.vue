@@ -1,285 +1,170 @@
 <template>
-  <div class="home-2">
-    <block-title title="授信放款占比" />
-    <v-chart class="bar-3d" :option="options" />
-    <div class="chart-ct">
-      <div class="item">
-        <div class="icon one"/>
-        <p>授信笔数</p>
-      </div>
-      <div class="item">
-        <div class="icon two"/>
-        <p>放款笔数</p>
-      </div>
-    </div>
+  <div class="home-7">
+    <block-title title="公积金数据调用情况" />
+    <TransitionGroup :name="listName" tag="ul" class="list">
+      <li v-for="(item, index) in ranks" :key="item.id">
+        <div class="index">{{ item.index }}</div>
+        <div class="right">
+          <div class="top">
+            <h6>{{ item.name }}</h6>
+            <p :style="{color: item.color}">调用 {{ item.valueStr }} 次</p>
+          </div>
+          <div class="percent">
+            <div class="active" :style="{width: item.percent, background: item.color}" />
+          </div>
+        </div>
+      </li>
+    </TransitionGroup>
   </div>
 </template>
 
 <script lang="ts" setup>
-// legend
+import {nextTick, onMounted, ref, watch} from "vue";
+import { v4 as uuidv4 } from 'uuid';
 import BlockTitle from "@/components/home/block-title.vue";
-import {computed} from "vue";
-import {formatNum} from "@/common";
+
+const colors = ['#2693FF', '#80C0FF', '#B3D9FF', '#FFFFFF', '#FFFFFF']
+
+const listName = ref('list')
+
+interface RankItem {
+  id: string
+  index: string
+  name: string
+  valueStr: string
+  percent: string
+  color: string
+}
 
 const props = defineProps<{
-  data: any
+  list: any[]
 }>()
 
-const XArr = ["创业贷", "消费贷", "银企专区"];
-// 第一条数据
-let data1 = computed(() => {
-  return [
-    Number(props.data['创业贷']?.creditNum.replace(/,/g, '')) || 0,
-    Number(props.data['消费贷']?.creditNum.replace(/,/g, '')) || 0,
-    Number(props.data['银企专区']?.creditNum.replace(/,/g, '')) || 0
-  ]
-});
-// 第二条数据
-let data2 = computed(() => {
-  return [
-    props.data['创业贷']?.fkrs || 0,
-    props.data['消费贷']?.fkrs || 0,
-    props.data['银企专区']?.fkrs || 0
-  ]
-});
-// 黄色
-const colors = [
-  {
-    type: "linear",
-    x: 1,
-    y: 0,
-    x2: 0,
-    y2: 0,
-    colorStops: [
-      {
-        offset: 0,
-        color: "#61E6F2",
-      },
-      {
-        offset: 0.5,
-        color: "#00C6D8",
-      },
-      {
-        offset: 0.5,
-        color: "#61E6F2",
-      },
-      {
-        offset: 1,
-        color: "#00C6D8",
-      },
-    ],
-  },
-];
-// 蓝色
-const colorsPlan = [
-  {
-    type: "linear",
-    x: 1,
-    y: 0,
-    x2: 0,
-    y2: 0,
-    colorStops: [
-      {
-        offset: 0,
-        color: "#66CCFF",
-      },
-      {
-        offset: 0.5,
-        color: "#2693FF",
-      },
-      {
-        offset: 0.5,
-        color: "#66CCFF",
-      },
-      {
-        offset: 1,
-        color: "#2693FF",
-      },
-    ],
-  },
-];
-let barWidth = 28,
-  symbolSizeTop = 14,
-  symbolOffsetX = 16.8;
-const options = computed(() => {
-  return {
-    grid: {
-      top: 60,
-      left: '1%',
-      right: 0,
-      bottom: 20,
-      containLabel: true,
-    },
-    animationDuration: 2000,
-    tooltip: {
-      show: true,
-      trigger: 'axis',
-      axisPointer: {
-        type: 'shadow'
-      },
-      borderColor: '#2693FF',
-      padding: 5,
-      backgroundColor: '#00111A',
-      textStyle: {
-        color: '#fff'
-      },
-      formatter: (params: any[]) => {
-        const arr = []
-        for (let i = 0; i < params.length; i+=3) {
-          arr.push({
-            value: params[i].data,
-            color: params[i].color.colorStops[0].color
-          })
-        }
-        let str = ''
-        arr.forEach(item => {
-          str += `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:${item.color
-          };"></span>${formatNum(item.value) + '笔'}<br/>`
-        })
-        return str
-      }
-    },
-    xAxis: {
-      type: "category",
-      data: XArr,
-      axisLine: {
-        //坐标轴线颜色
-        lineStyle: {
-          color: "#626361",
-        },
-      },
-      axisLabel: {
-        margin: 16,
-        color: "#919599", //坐标的字体颜色
-        fontSize: 14,
-      },
-      axisTick: {
-        //坐标轴刻度颜色
-        show: false,
-      },
-    },
-    yAxis: {
-      type: "value",
-      name: '笔' + '  ',
-      nameLocation: 'end',
-      nameTextStyle: {
-        color: '#919599',
-        align: 'right',
-        fontSize: 14
-      },
-      nameGap: 25,
-      //设置网格线颜色
-      splitLine: {
-        show: false
-      },
-      axisLabel: {
-        color: "#919599", //坐标的字体颜色
-        fontSize: 14,
-      },
-    },
-    series: [
-      // 第一条数据进度柱子
-      {
-        name: 'bar1',
-        type: "bar",
-        barWidth: barWidth,
-        stack: "1",
-        itemStyle: {
-          color: colorsPlan[0],
-          borderRadius: 0,
-        },
-        data: data1.value,
-      },
-      // 第一条数据上面正方形：颜色
-      {
-        name: 'bar1',
-        type: "pictorialBar",
-        symbol: "diamond",
-        symbolSize: [barWidth, symbolSizeTop],
-        symbolOffset: [-symbolOffsetX, -symbolSizeTop / 2],
-        symbolPosition: "end",
-        z: 12,
-        color: "#9ACDFF",
-        data: data1.value,
-      },
-      //  第一条数据底部正方形：颜色
-      {
-        name: 'bar1',
-        type: "pictorialBar",
-        symbol: "diamond",
-        symbolSize: [barWidth, symbolSizeTop],
-        symbolOffset: [-symbolOffsetX, symbolSizeTop / 2],
-        z: 12,
-        color: colorsPlan[0],
-        data: data1.value,
-      },
-      // 第二条数据进度柱子
-      {
-        name: 'bar2',
-        type: "bar",
-        stack: "2",
-        barWidth: barWidth,
-        itemStyle: {
-          color: colors[0],
-        },
-        data: data2.value,
-      },
-      // 第二条数据中间正方形:颜色
-      {
-        name: 'bar2',
-        type: "pictorialBar",
-        symbol: "diamond",
-        symbolSize: [barWidth, symbolSizeTop],
-        symbolOffset: [symbolOffsetX, -symbolSizeTop / 2],
-        symbolPosition: "end",
-        z: 12,
-        color: "#9AFFF5",
-        data: data2.value,
-      },
-      // 第二条数据底部正方形
-      {
-        name: 'bar2',
-        type: "pictorialBar",
-        symbol: "diamond",
-        symbolSize: [barWidth, symbolSizeTop],
-        symbolOffset: [symbolOffsetX, symbolSizeTop / 2],
-        color: colors[0],
-        z: 12,
-        data: data2.value,
-      }
-    ],
-  };
+const ranks = ref<any[]>([])
+let timer = 0
+
+function genRanks(list: any[]) {
+  listName.value = ''
+  clearTimeout(timer)
+  const first = Number(list[0]?.cnt || 0)
+  let big = first + first * 0.27
+  const res: any[] = []
+  list.forEach((item, index) => {
+    const num = item.cnt
+    res.push({
+      id: uuidv4(),
+      index: '0' + (index + 1),
+      name: item.yh,
+      valueStr: item.cnt,
+      percent: (num / big * 100).toFixed(0) + '%',
+      color: colors[index]
+    })
+  })
+  ranks.value = res
+  nextTick(() => {
+    listName.value = 'list'
+    deleteOne()
+  })
+}
+
+function deleteOne() {
+  const item = {
+    ...ranks.value[0],
+    id: uuidv4()
+  }
+  ranks.value.push(item)
+  timer = setTimeout(() => {
+    ranks.value.splice(0, 1)
+    deleteOne()
+  }, 2000)
+}
+
+onMounted(() => {
+  if (!props.list.length) return
+  genRanks(props.list)
+})
+
+watch(() => props.list, (newVal) => {
+  if (!props.list.length) return
+  genRanks(props.list)
 })
 </script>
 
 <style scoped lang="stylus">
 @import "../../assets/common.styl"
-.home-2
+
+.list-move, /* 对移动中的元素应用的过渡 */
+.list-leave-active
+  transform translate3d(0, 0, 0)
+  transition all 0.6s linear
+
+.list-enter-active
+  transform translate3d(0, 0, 0)
+  transition all 0.6s linear
+
+.list-enter-from
+  transform translate3d(0, 100%, 0)
+
+.list-leave-to
+  transform translate3d(0, -100%, 0)
+
+/* 确保将离开的元素从布局流中删除
+  以便能够正确地计算移动的动画。 */
+.list-leave-active
+  position: absolute
+
+.home-7
+  height 290px
   margin-top 32px
   bottomBg()
-  position relative
-  .bar-3d
-    height 250px
-  .chart-ct
-    position absolute
-    left 0
-    top 60px
-    width 100%
-    display flex
-    justify-content center
-    color #A1AAB3
-    font-size 14px
-    .item
+  .list
+    height 218px
+    overflow hidden
+    padding-bottom 10px
+    position relative
+    &>li
+      box-sizing border-box
+      padding 0 10px
+      width 100%
       display flex
       align-items center
-      &:first-child
-        margin-right 24px
-      .icon
-        margin-right 8px
-        width 14px
-        height 14px
-        &.one
-          background #2693FF
-        &.two
-          background #00C6D8
+      padding-top 24px
+      .index
+        margin-right 16px
+        width 32px
+        height 32px
+        line-height 32px
+        text-align center
+        border-right 4px
+        background rgba(38, 147, 255, 0.1)
+        font-size 14px
+        font-weight bold
+        color #fff
+      .right
+        flex 1
+        .top
+          margin-bottom 10px
+          display flex
+          justify-content space-between
+          font-size 16px
+          color #A3BECC
+          &>p
+            font-weight bold
+        .percent
+          height 2px
+          background rgba(255, 255, 255, 0.1)
+          .active
+            position relative
+            height 100%
+            transition all 0.6s
+            &:after
+              content ''
+              position absolute
+              right 0
+              top -3px
+              width 4px
+              height 8px
+              background inherit
+              border-bottom-right-radius 4px
+              transform rotateZ(10deg)
 </style>

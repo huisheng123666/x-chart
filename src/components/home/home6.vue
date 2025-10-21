@@ -3,35 +3,28 @@
     <block-title title="活跃统计" />
     <div class="list">
       <div class="item">
-        <img src="./home-6-1@2x.png" alt="">
-        <div class="info">
-          <h6>{{ data.pageView }}<span>次</span></h6>
-          <p>浏览量</p>
+        <h6>访问量 <img src="./home-6-1@2x.png" alt=""></h6>
+        <div class="total">
+          <p>{{ formatNum(data.pageView) }} 次</p>
+          <span>历史累计</span>
+        </div>
+        <div class="total">
+          <p>{{ formatNum(data.pageView_day) }} 次</p>
+          <span>今日新增</span>
         </div>
       </div>
-<!--      <div class="line"/>-->
-<!--      <div class="item">-->
-<!--        <img src="./home-6-4@2x.png" alt="">-->
-<!--        <div class="info">-->
-<!--          <h6>{{ data.visitUserNum }}<span>次</span></h6>-->
-<!--          <p>游客流量</p>-->
-<!--        </div>-->
-<!--      </div>-->
+
       <div class="item">
-        <img src="./home-6-3@2x.png" alt="">
-        <div class="info">
-          <h6>{{ data.loginUserNum }}<span>次</span></h6>
-          <p>申请用户</p>
+        <h6>注册用户 <img src="./home-6-2@2x.png" alt=""></h6>
+        <div class="total">
+          <p>{{ formatNum(data.loginUserNum) }} 人</p>
+          <span>历史累计</span>
+        </div>
+        <div class="total">
+          <p>{{ formatNum(data.loginUserNum_day) }} 人</p>
+          <span>今日新增</span>
         </div>
       </div>
-<!--      <div class="line"/>-->
-<!--      <div class="item">-->
-<!--        <img src="./home-6-2@2x.png" alt="">-->
-<!--        <div class="info">-->
-<!--          <h6>{{ data.totalUserNum }}<span>次</span></h6>-->
-<!--          <p>累计用户</p>-->
-<!--        </div>-->
-<!--      </div>-->
 
     </div>
   </div>
@@ -39,6 +32,7 @@
 
 <script lang="ts" setup>
 import BlockTitle from "@/components/home/block-title.vue";
+import {formatNum} from "@/common";
 
 defineProps<{
   data: any
@@ -61,35 +55,34 @@ defineProps<{
   bottomBg()
   .list
     padding 0 10px
-    margin-top 56px
-    display flex
-    flex-wrap wrap
-    align-items flex-start
-    .line
-      width 1px
-      height 40px
-      background #2693FF
+    margin-top 16px
+    display grid
+    grid-template-columns repeat(2, 1fr)
+    grid-column-gap 16px
     .item
-      box-sizing border-box
-      flex 1
-      text-align center
-      &>img
-        margin-right 14px
-        width 64px
-        height 64px
-        animation scaleTo 1.5s ease infinite
-      .info
-        margin-top 24px
-        &>h6
-          margin-bottom 12px
-          font-size 32px
-          font-weight bold
-          color #fff
-          white-space nowrap
-          &>span
-            font-size 16px
-            font-weight 400
+      display grid
+      grid-template-rows repeat(3, auto)
+      grid-row-gap 24px
+      background: linear-gradient( 180deg, rgba(38,147,255,0) 0%, rgba(38,147,255,0.1) 100%)
+      border: 1px solid
+      border-image: linear-gradient(180deg, rgba(38, 147, 255, 0), rgba(38, 147, 255, 0.2)) 1 1
+      padding 14px 24px
+      &>h6
+        display flex
+        justify-content space-between
+        align-items center
+        font-size 20px
+        color #FFFFFF
+        &>img
+          width 40px
+          height 40px
+      .total
         &>p
+          margin-bottom 8px
+          font-size 18px
+          color #FFFFFF
+          font-weight bold
+        &>span
           font-size 14px
           color #A3BECC
 </style>

@@ -1,16 +1,16 @@
 <template>
   <div class="home-7">
-    <block-title title="消费贷申请排名" />
+    <block-title title="实时放款动态" />
     <TransitionGroup :name="listName" tag="ul" class="list">
       <li v-for="(item, index) in ranks" :key="item.id">
-        <div class="index">{{ item.index }}</div>
-        <div class="right">
+        <div class="content">
           <div class="top">
-            <h6>{{ item.name }}</h6>
-            <p :style="{color: item.color}">{{ item.valueStr }} 次</p>
+            <p class="ellipsis-one">{{ item.company_type }}</p>
+            <span>放款 {{ item.SIGN_AMOUNT }}万元</span>
           </div>
-          <div class="percent">
-            <div class="active" :style="{width: item.percent, background: item.color}" />
+          <div class="bottom">
+            <p>{{ item.YHLB }}</p>
+            <span>{{ item.fk_time }}</span>
           </div>
         </div>
       </li>
@@ -27,37 +27,21 @@ const colors = ['#2693FF', '#80C0FF', '#B3D9FF', '#FFFFFF', '#FFFFFF']
 
 const listName = ref('list')
 
-interface RankItem {
-  id: string
-  index: string
-  name: string
-  valueStr: string
-  percent: string
-  color: string
-}
-
 const props = defineProps<{
   list: any[]
 }>()
 
-const ranks = ref<RankItem[]>([])
+const ranks = ref<any[]>([])
 let timer = 0
 
 function genRanks(list: any[]) {
   listName.value = ''
   clearTimeout(timer)
-  const first = Number(list[0]?.applyNum.replace(/,/g, '') || 0)
-  let big = first + first * 0.27
-  const res: RankItem[] = []
+  const res: any[] = []
   list.forEach((item, index) => {
-    const num = Number(item.applyNum.replace(/,/g, '') || 0)
     res.push({
       id: uuidv4(),
-      index: '0' + (index + 1),
-      name: item.deptName + ' | ' + item.prodName,
-      valueStr: item.applyNum,
-      percent: (num / big * 100).toFixed(0) + '%',
-      color: colors[index]
+      ...item
     })
   })
   ranks.value = res
@@ -116,53 +100,35 @@ watch(() => props.list, (newVal) => {
   margin-top 32px
   bottomBg()
   .list
+    margin-top 12px
     height 218px
     overflow hidden
     padding-bottom 10px
     position relative
     &>li
-      box-sizing border-box
-      padding 0 10px
       width 100%
-      display flex
-      align-items center
-      padding-top 24px
-      .index
-        margin-right 16px
-        width 32px
-        height 32px
-        line-height 32px
-        text-align center
-        border-right 4px
-        background rgba(38, 147, 255, 0.1)
-        font-size 14px
-        font-weight bold
-        color #fff
-      .right
-        flex 1
+      padding-bottom 8px
+      .content
+        width 100%
+        box-sizing border-box
+        padding 14px 16px
+        background: linear-gradient( 180deg, rgba(38,147,255,0) 0%, rgba(38,147,255,0.1) 100%)
+        border: 1px solid
+        border-image: linear-gradient(180deg, rgba(38, 147, 255, 0), rgba(38, 147, 255, 0.2)) 1 1
         .top
-          margin-bottom 10px
+          display grid
+          grid-template-columns 1fr auto
+          grid-column-gap 10px
+          font-size 16px
+          font-weight 500
+          &>p
+            color #fff
+          &>span
+            color #2693FF
+        .bottom
+          margin-top 8px
           display flex
           justify-content space-between
-          font-size 16px
-          color #A3BECC
-          &>p
-            font-weight bold
-        .percent
-          height 2px
-          background rgba(255, 255, 255, 0.1)
-          .active
-            position relative
-            height 100%
-            transition all 0.6s
-            &:after
-              content ''
-              position absolute
-              right 0
-              top -3px
-              width 4px
-              height 8px
-              background inherit
-              border-bottom-right-radius 4px
-              transform rotateZ(10deg)
+          font-size 14px
+          color rgba(255, 255, 255, .5)
 </style>

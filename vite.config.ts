@@ -42,7 +42,11 @@ export default defineConfig({
       '/hengtai/api': {
         target: 'http://localhost:3003',
         changeOrigin: true,
-      }
+      },
+      '/sulac': {
+        target: 'https://www.threegorges-financial.com',
+        changeOrigin: true,
+      },
     }
   }
 })

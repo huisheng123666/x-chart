@@ -11,6 +11,7 @@ import TgfHeader from "@/components/tgf-header/tgf-header.vue";
 import axios from "axios";
 import {onUnmounted, ref} from "vue";
 import {data7Tem, data8Tem} from "@/common/tgf-mock";
+import { DATA_TEMP } from './data-tem'
 
 const host = 'https://api.threegorges-financial.com'
 
@@ -67,6 +68,18 @@ const timer = setInterval(() => {
   getRight()
 }, 1000 * 60 * 5)
 
+const allData = ref(DATA_TEMP)
+
+function getAllData() {
+  axios.get('https://www.threegorges-financial.com//sulac/queryAll')
+    .then(({ data }) => {
+      if (data.code !== 1) return
+      allData.value = data.data
+    })
+}
+getAllData()
+
+
 onUnmounted(() => {
   clearInterval(timer)
 })
@@ -77,18 +90,18 @@ onUnmounted(() => {
     <tgf-header/>
     <div class="content">
       <div class="left">
-        <home1 :data="data1" />
-        <home2 :data="data1" />
-        <home3 :data="data3" />
+        <home1 :data="allData.left1" />
+        <home2 :list="allData.left2" />
+        <home3 :data="allData.left3" />
       </div>
       <div class="center">
-        <home4/>
-        <home5 :data="data5" />
+        <home4 :map-data="allData.mid5" :top-data="allData.mid4?.[0] || {}" />
+        <home5 :data="allData.mid6" />
       </div>
       <div class="right">
-        <home6 :data="data6" />
-        <home7 :list="data7" />
-        <home8 :list="data8" />
+        <home6 :data="allData.right7?.[0] || {}" />
+        <home7 :list="allData.right8" />
+        <home8 :list="allData.right9" />
       </div>
     </div>
   </div>

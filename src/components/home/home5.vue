@@ -29,31 +29,31 @@ const startIndex = ref(0)
 const lastIndex = ref(12)
 
 const XArr = computed(() => {
-  return props.data.amtList?.slice(startIndex.value, lastIndex.value).map((item: { monthStr: string; }) => {
-    return item.monthStr.replace('-', '.');
+  return props.data?.slice(startIndex.value, lastIndex.value).map((item: { MonthDate: string; }) => {
+    return item.MonthDate.replace('-', '.');
   }) || []
 });
 // 第一条数据
 let data1 = computed(() => {
-  if (Object.keys(props.data).length) {
-    return props.data.amtList?.slice(startIndex.value, lastIndex.value).map((item: { totalCreditAmt: number; }) => {
-      return item.totalCreditAmt;
+  if (props.data.length) {
+    return props.data?.slice(startIndex.value, lastIndex.value).map((item: { CreditAmt: number; }) => {
+      return item.CreditAmt;
     }) || []
   }
   return
 });
 // 第二条数据
 let data2 = computed(() => {
-  if (Object.keys(props.data).length) {
-    return props.data.userList?.slice(startIndex.value, lastIndex.value).map((item: { totalUserNum: number; }) => {
-      return item.totalUserNum;
+  if (props.data.length) {
+    return props.data?.slice(startIndex.value, lastIndex.value).map((item: { UserNum: number; }) => {
+      return item.UserNum;
     }) || []
   }
   return new Array(12).fill(1).map(i => (300000 * Math.random()).toFixed(0))
 });
 
 setInterval(() => {
-  const len = props.data.userList?.length || 0
+  const len = props.data?.length || 0
   if (lastIndex.value < len - 2) {
     startIndex.value++
     lastIndex.value++

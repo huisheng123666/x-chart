@@ -1,208 +1,135 @@
 <template>
   <div class="home-8">
-    <block-title title="银行贷款利率排名" />
-    <v-chart class="bar-line" :option="options" />
+    <block-title title="市场主体分部" />
+    <v-chart ref="pieRef" class="bar-line" :option="options" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import {computed, ref} from "vue";
+import {computed, onMounted, onUnmounted, ref} from "vue";
 import BlockTitle from "@/components/home/block-title.vue";
-import { v4 as uuid } from 'uuid'
 
 const props = defineProps<{
   list: any[]
 }>()
 
-const startIndex = ref(0)
-const lastIndex = ref(5)
+const pieRef = ref()
 
-console.log(props.list)
-
-const XArr = computed(() => {
-  return props.list?.slice(startIndex.value, lastIndex.value).map(item => `${item.deptNAME}&${uuid()}`) || []
-});
-const XArr1 = computed(() => {
-  return props.list?.slice(startIndex.value, lastIndex.value).map(item => item.productName) || []
-});
-// 第一条数据
-let data1 = computed(() => {
-  return props.list?.slice(startIndex.value, lastIndex.value).map(item => item.interest) || []
-});
-
-setInterval(() => {
-  if (lastIndex.value < props.list?.length - 2) {
-    startIndex.value = 5
-    lastIndex.value = 10
-  } else {
-    startIndex.value = 0
-    lastIndex.value = 5
-  }
-}, 6000)
-// 蓝色
-const colorsPlan = [
-  {
-    type: "linear",
-    x: 1,
-    y: 0,
-    x2: 0,
-    y2: 0,
-    colorStops: [
-      {
-        offset: 0,
-        color: "#61E6F2",
-      },
-      {
-        offset: 0.5,
-        color: "#00C6D8",
-      },
-      {
-        offset: 0.5,
-        color: "#61E6F2",
-      },
-      {
-        offset: 1,
-        color: "#00C6D8",
-      },
-    ],
-  },
-];
-let barWidth = 28,
-  symbolSizeTop = 14;
-
-const commonConfig = computed(() => {
+const options = computed(() => {
   return {
-    grid: {
-      top: 60,
-      left: '1%',
-      right: '1%',
-      bottom: 20,
-      containLabel: true,
-    },
-    animationDuration: 2000,
-    animationDurationUpdate: 800,
-    tooltip: {
-      show: true,
-      trigger: 'axis',
-      axisPointer: {
-        type: 'shadow'
-      },
-      borderColor: '#2693FF',
-      padding: 5,
-      backgroundColor: '#00111A',
+    title: {
+      text: (props.list[0].rate * 100).toFixed(2) + '%',
+      left: '24%',
+      top: '40%',
+      textAlign: 'center',
+      subtext: props.list[0].company_type,
       textStyle: {
-        color: '#fff'
+        fontSize: 24,
+        color: '#fff',
+        fontWeight: 600
       },
-      formatter: (params: any[]) => {
-        const arr = []
-        for (let i = 0; i < params.length; i+=3) {
-          arr.push({
-            value: params[i].data,
-            color: typeof params[i].color === "string" ? params[i].color : params[i].color.colorStops[0].color
-          })
-        }
-        let str = ''
-        arr.forEach((item, index) => {
-          str += `<span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:${item.color
-          };"></span>${item.value}%<br/>`
-        })
-        return str
+      subtextStyle: {
+        fontSize: 12,
+        color: 'rgba(255, 255, 255, 0.6)',
       }
     },
-    xAxis: {
-      type: "category",
-      data: XArr.value,
-      axisLine: {
-        //坐标轴线颜色
-        lineStyle: {
-          color: "#626361",
-        },
-      },
-      axisLabel: {
-        margin: 16,
-        color: "#919599", //坐标的字体颜色
-        fontSize: 14,
-        formatter: (val: string) => {
-          const labelArr = val.split('&')
-          return labelArr[0]
-        }
-      },
-      axisTick: {
-        //坐标轴刻度颜色
-        show: false,
-      },
+    tooltip: {
+      formatter: '{b}'
     },
-    yAxis: [
+    color: ['#7733FF', '#00FFE6', '#2F85FF'],
+    grid: {
+      bottom: '3%',
+    },
+    legend: {
+      itemWidth: 12,
+      itemHeight: 12,
+      top: 'center',
+      right: 0,
+      left: '55%',
+      itemGap: 20,
+      formatter: (name:string) => {
+        const arr = name.split(',')
+        return `{a|${arr[0]}}{b|${arr[1]}}`
+      },
+      textStyle: {
+        color: '#fff',
+        rich: {
+          a: {
+            width: 80,
+            fontSize: 14,
+          },
+          b: {
+            fontSize: 14,
+            width: 60,
+            align: 'right',
+          }
+        }
+      }
+    },
+    series: [
       {
-        type: "value",
-        nameGap: 25,
-        //设置网格线颜色
-        splitLine: {
+        type: 'pie',
+        radius: ['42%', '60%'],
+        center: ['26%', '50%'],
+        avoidLabelOverlap: false,
+        itemStyle: {
+          borderRadius: 10,
+          borderWidth: 5,
+          borderColor: '#00121B'
+        },
+        label: {
+          show: false,
+        },
+        labelLine: {
           show: false
         },
-        axisLabel: {
-          show: false,
-          color: "#919599", //坐标的字体颜色
-          fontSize: 14,
-        },
+        data: props.list.map((item, _) => {
+          return {
+            name: item.company_type + ',' + (item.rate * 100).toFixed(2) + '%',
+            value: item.cnt
+          }
+        })
       }
     ]
   }
 })
-const options = computed(() => {
-  return {
-    ...commonConfig.value,
-    series: [
-      // 第一条数据进度柱子
-      {
-        name: 'bar1',
-        type: "bar",
-        barWidth: barWidth,
-        stack: "1",
-        itemStyle: {
-          color: colorsPlan[0],
-          borderRadius: 0,
-        },
-        data: data1.value,
-        label: {
-          show: true,
-          position: [1, -35],
-          color: '#A3BECC',
-          align: 'center',
-          offset: [barWidth/2, -15],
-          fontSize: 16,
-          lineHeight: 20,
-          formatter: (params: any) => {
-            const percentInt = params.data.toString()
-            return `${XArr1.value[params.dataIndex]}\n${Number(percentInt) + '%'}`
-          }
-        }
-      },
-      // 第一条数据上面正方形：颜色
-      {
-        name: 'bar1',
-        type: "pictorialBar",
-        symbol: "diamond",
-        symbolSize: [barWidth, symbolSizeTop],
-        symbolOffset: [0, -symbolSizeTop / 2],
-        symbolPosition: "end",
-        z: 12,
-        color: "#9AFFF5",
-        data: data1.value
-      },
-      //  第一条数据底部正方形：颜色
-      {
-        name: 'bar1',
-        type: "pictorialBar",
-        symbol: "diamond",
-        symbolSize: [barWidth, symbolSizeTop],
-        symbolOffset: [0, symbolSizeTop / 2],
-        z: 12,
-        color: colorsPlan[0],
-        data: data1.value,
+
+let titleTimer = 0
+
+onMounted(() => {
+  const echarts = pieRef.value
+  let index = 0
+  echarts.dispatchAction({
+    type: 'highlight',
+    dataIndex: index
+  })
+  titleTimer = setInterval(() => {
+    if (index >= props.list.length) index = 0;
+    const current = props.list[index]
+    props.list.forEach((_, i) => {
+      if (i !== index) {
+        echarts.dispatchAction({
+          type: 'downplay',
+          dataIndex: i
+        })
       }
-    ],
-  };
+    })
+    echarts.dispatchAction({
+      type: 'highlight',
+      dataIndex: index
+    })
+    echarts.setOption({
+      title: {
+        text: (current.rate * 100).toFixed(2) + '%',
+        subtext: current.company_type,
+      },
+    })
+    index++
+  }, 3000)
+})
+
+onUnmounted(() => {
+  clearInterval(titleTimer)
 })
 </script>
 
@@ -213,4 +140,11 @@ const options = computed(() => {
   bottomBg()
   .bar-line
     height 250px
+    background: url("./pie-bg@2x.png") 40px 65px no-repeat,
+      linear-gradient(
+        180deg,
+        rgba(153, 204, 255, 0) 0%,
+        rgba(153, 204, 255, 0.08) 100%
+      );
+    background-size: 124px 124px, auto;
 </style>

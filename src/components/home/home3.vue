@@ -33,17 +33,14 @@ const mock = [
 ]
 
 const chartValues = computed(() => {
-  if (Object.keys(props.data).length === 0) return mock
-  const list: any[] = []
-  for (let i = 1; i < 4; i++) {
-    const item = props.data[i]
-    if (!item) continue
-    list.push({
-      name: item.typeName,
-      value: item.proportion,
-      percent: (item.proportion * 100).toFixed(0) + '%'
-    })
-  }
+  const list: any[] = props.data.map((item: any) => {
+    return {
+      name: item.TypeName,
+      value: item.Proportion,
+      percent: (item.Proportion * 100).toFixed(0) + '%'
+    }
+  })
+
   return list
 })
 

@@ -9,10 +9,10 @@
     <TransitionGroup :name="slideName" tag="div" class="list">
       <div class="h1-item" v-for="item in list" :key="item.id">
         <div class="col">
-          <img :src="item.icon" alt="">
+<!--          <img :src="item.icon" alt="">-->
           {{ item.prodName }}
         </div>
-        <div class="col">{{ item.creditAmt }}</div>
+        <div class="col">{{ formatNum(item.creditAmt) }}</div>
         <div class="col">{{ formatNum(item.signAmt) }}</div>
       </div>
     </TransitionGroup>
@@ -31,6 +31,7 @@ import {formatNum} from "@/common";
 const props = defineProps<{
   data: any
 }>()
+
 
 const list = ref<any[]>([
   {
@@ -83,11 +84,10 @@ const slideName = ref('')
 function genList() {
   slideName.value = ''
   clearTimeout(timer)
-  list.value = keys.map((item: string | number, index: any) => {
+  list.value = props.data.map((item: any, index: any) => {
     return {
       id: index,
-      ...props.data[item],
-      icon: icons[item]
+      ...item
     }
   })
   nextTick(() => {
@@ -109,7 +109,7 @@ function deleteOne() {
 }
 
 onMounted(() => {
-  if (Object.keys(props.data).length) {
+  if (props.data.length) {
     genList()
   }
 })

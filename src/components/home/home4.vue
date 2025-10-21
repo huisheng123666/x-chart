@@ -2,38 +2,52 @@
   <div class="home-4">
     <div class="top-data">
       <div class="item">
-        <div class="info">
-          <h6>{{ detail.validApplyNum }} <span>笔</span></h6>
-          <p>有效申请数</p>
-        </div>
+        <img src="./top1@2x.png" alt="">
+        <p>
+          <span>历史累计</span>
+          {{ detail.totalCreditNum }} 笔
+        </p>
+        <p>
+          <span>今年新增</span>
+          {{ detail.CreditNum }} 笔
+        </p>
       </div>
       <div class="item">
-        <div class="info">
-          <h6>{{ detail.totalCreditNum }} <span>笔</span></h6>
-          <p>授信笔数</p>
-        </div>
+        <img src="./top3@2x.png" alt="">
+        <p>
+          <span>历史累计</span>
+          {{ detail.totalCreditAmt }} 万元
+        </p>
+        <p>
+          <span>今年新增</span>
+          {{ detail.CreditAmt }} 万元
+        </p>
       </div>
       <div class="item">
-        <div class="info">
-          <h6>{{ detail.totalCreditAmt }} <span>万元</span></h6>
-          <p>授信金额</p>
-        </div>
+        <img src="./top2@2x.png" alt="">
+        <p>
+          <span>历史累计</span>
+          {{ detail.allLoanNum }} 笔
+        </p>
+        <p>
+          <span>今年新增</span>
+          {{ detail.LoanNum }} 笔
+        </p>
       </div>
       <div class="item">
-        <div class="info">
-          <h6>{{ detail.allLoanNum }} <span>笔</span></h6>
-          <p>放款笔数</p>
-        </div>
-      </div>
-      <div class="item">
-        <div class="info">
-          <h6>{{ detail.allLoanAmt }} <span>万元</span></h6>
-          <p>放款金额</p>
-        </div>
+        <img src="./top4@2x.png" alt="">
+        <p>
+          <span>历史累计</span>
+          {{ detail.allLoanAmt }} 万元
+        </p>
+        <p>
+          <span>今年新增</span>
+          {{ detail.LoanAmt }} 万元
+        </p>
       </div>
     </div>
     <div class="map-box">
-      <img src="./map/map@2x.png" alt="">
+      <img src="./map/new-map@2x.png" alt="">
       <img :class="['area', current === index ? 'active' : '']" v-for="(item, index) in imgs" :key="item" :src="item" alt="">
       <div class="bar" v-for="(item, index) in percents" :key="index" :style="{...positions[index], height: item}">
         <img class="top" src="./map/bar-top.png"  alt=""/>
@@ -44,21 +58,21 @@
         <ul style="padding-bottom: 0">
           <li>
             <h6>授信金额</h6>
-            <p>{{ currentData?.allCreditAmt }} <span>万元</span></p>
+            <p>{{ formatNum(currentData?.allCreditAmt) }} <span>万元</span></p>
           </li>
           <li>
             <h6>授信户数</h6>
-            <p>{{ currentData?.allCreditNum }} <span>户</span></p>
+            <p>{{ formatNum(currentData?.allCreditNum) }} <span>户</span></p>
           </li>
         </ul>
         <ul>
           <li>
             <h6>放款金额</h6>
-            <p>{{ currentData?.allLoanAmt }} <span>万元</span></p>
+            <p>{{ formatNum(currentData?.allLoanAmt) }} <span>万元</span></p>
           </li>
           <li>
             <h6>放款户数</h6>
-            <p>{{ currentData?.allLoanNum }} <span>户</span></p>
+            <p>{{ formatNum(currentData?.allLoanNum) }} <span>户</span></p>
           </li>
         </ul>
       </div>
@@ -76,6 +90,7 @@
 
 <script lang="ts" setup>
 import map1 from './map/1@2x.png'
+import ylq from './map/ylq@2x.png'
 import map2 from './map/2@2x.png'
 import map3 from './map/3@2x.png'
 import map4 from './map/4@2x.png'
@@ -88,28 +103,25 @@ import {computed, onUnmounted, ref} from "vue";
 import axios from "axios";
 import {formatNum} from "@/common";
 
+const props = defineProps<{
+  mapData: any[]
+  topData: any
+}>()
+
 const host = 'https://api.threegorges-financial.com'
 
-const imgs = [map1,  map2, map3, map4, map5, map6, map7, map8, map9]
+const imgs = [map1, ylq, map2, map3, map4, map5, map6, map7, map8, map9]
 
-const areas = ['宜昌城区', '远安县', '当阳市', '枝江市', '宜都市', '五峰土家族自治县', '长阳土家族自治县', '秭归县', '兴山县']
-
-const data = ref(new Array(9).fill(1).map(item  => Number((383112 * Math.random()).toFixed(0))))
-
-const percents = computed(() => {
-  let big = 0
-  data.value.forEach(item => {
-    if (item > big) big = item
-  })
-  return data.value.map(item => {
-    return (item / big * 210).toFixed(0) + 'px'
-  })
-})
+const areas = ['宜昌城区', '夷陵区', '远安县', '当阳市', '枝江市', '宜都市', '五峰土家族自治县', '长阳土家族自治县', '秭归县', '兴山县']
 
 const positions = [
   {
-    left: '550px',
-    bottom: '312px',
+    left: '500px',
+    bottom: '260px',
+  },
+  {
+    left: '520px',
+    bottom: '342px',
   },
   {
     left: '676px',
@@ -164,47 +176,41 @@ function animation() {
 
 animation()
 
-const detail = ref({
-  validApplyNum: '550,620',
-  totalCreditNum: '129,598',
-  totalCreditAmt: '5,607,773',
-  finDeptNum: '26',
-  productNum: '82',
-  allLoanAmt: '470,380,4',
-  allLoanNum: '693,60'
+const detail = computed(() => {
+  const data: any = {}
+  Object.keys(props.topData).map((key) => {
+    data[key] = formatNum(props.topData[key])
+  })
+  return data
 })
 
-const cityData = ref<any>({})
+const cityData = computed(() => {
+  const listMap: any = {}
+  props.mapData.map((item: { cityName: string; }) => {
+    if (!item.cityName) return
+    listMap[item.cityName] = item
+  })
+  return listMap
+})
+
+const data = computed(() => {
+  return areas.map(item => Number(cityData.value[item].allCreditAmt))
+})
+
+const percents = computed(() => {
+  let big = 0
+  data.value.forEach(item => {
+    if (item > big) big = item
+  })
+  return data.value.map(item => {
+    return (item / big * 210).toFixed(0) + 'px'
+  })
+})
 
 const currentData = computed(() => {
   const name = areas[current.value]
   return cityData.value[name]
 })
-
-function getData() {
-  axios.post(host + '/sulac/queryAllForArea')
-    .then(({ data: { data: dto } }) => {
-      detail.value = {
-        validApplyNum: formatNum(dto.validApplyNum),
-        totalCreditNum: formatNum(dto.totalCreditNum),
-        totalCreditAmt: formatNum(dto.totalCreditAmt),
-        finDeptNum: formatNum(dto.finDeptNum),
-        productNum: formatNum(dto.productNum),
-        allLoanAmt: formatNum(dto.allLoanAmt),
-        allLoanNum: formatNum(dto.allLoanNum)
-      }
-
-      const listMap: any = {}
-      dto.list.map((item: { cityName: string; }) => {
-        if (!item.cityName) return
-        listMap[item.cityName] = item
-      })
-      cityData.value = listMap
-      data.value = areas.map(item => Number(listMap[item].allCreditAmt.replace(/,/g, '')))
-    })
-}
-
-getData()
 
 const productData = ref<any>({})
 
@@ -218,12 +224,11 @@ function getProductNum() {
 getProductNum()
 
 const timer = setInterval(() => {
-  getData()
   getProductNum()
 }, 1000 * 60 * 5)
 
 onUnmounted(() => {
-  clearInterval(timer)
+  // clearInterval(timer)
 })
 </script>
 
@@ -254,33 +259,25 @@ onUnmounted(() => {
     left 0
     top 24px
     width 100%
-    display flex
+    display grid
+    grid-template-columns repeat(4, auto)
     justify-content space-between
     .item
-      display flex
-      align-items center
+      display grid
+      grid-template-areas 'a b' 'a c'
+      grid-template-columns 50px auto
+      grid-column-gap 12px
       &>img
         margin-right 8px
-        width 72px
-        height 72px
-      .info
-        &>h6
-          margin-bottom 8px
-          font-size 24px
-          color #2693FF
-          font-weight bold
-          &>span
-            font-size 14px
-            font-weight 400
-        &>p
-          width 82px
-          height 26px
-          line-height 26px
-          text-align center
-          font-size 12px
-          color #2693FF
-          background url(./map/name-bg@2x.png) center center no-repeat
-          background-size contain
+        width 50px
+        height 44px
+        grid-area a
+      &>p
+        font-size 16px
+        color #2693FF
+        &>span
+          font-size 14px
+          color rgba(255, 255, 255, 0.6)
   .map-box
     position relative
     width 100%
