@@ -1,6 +1,9 @@
 <template>
   <div :class="['wrapper', big ? 'big' : '']">
-    <h4 class="tgf-title">{{ title }}</h4>
+    <h4 class="tgf-title">
+      {{ title }}
+      <slot/>
+    </h4>
     <canvas ref="titleRef" />
   </div>
 </template>
@@ -47,7 +50,7 @@ onUnmounted(() => {
   position relative
   &.big
     background url(./big-title@2x.png) left top no-repeat
-    background-size 100% auto
+    background-size 100% 100%
   &>canvas
     position absolute
     left 0

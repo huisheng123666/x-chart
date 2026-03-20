@@ -34,6 +34,10 @@ const router = createRouter({
           component: () => import('@/views/admin/kanban.vue')
         }
       ]
+    },
+    {
+      path: '/jinjian',
+      component: () => import('@/views/jinjian/jinjian.vue')
     }
   ]
 })

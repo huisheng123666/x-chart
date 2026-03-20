@@ -1,16 +1,23 @@
 <template>
-  <div class="date-time">
-    <p>{{ dateTime.time }}</p>
-    <div class="date">
-      周{{ dateTime.week }}<br>
-      {{ dateTime.date }}
+  <div v-if="!horizontal" class="date-time">
+      <p>{{ dateTime.time }}</p>
+      <div class="date">
+        周{{ dateTime.week }}<br/>
+        {{ dateTime.date }}
+      </div>
     </div>
-  </div>
+    <div v-else class="horizontal">
+      {{ dateTime.date }}，周{{ dateTime.week }}，{{ dateTime.time }}
+    </div>
 </template>
 
 <script lang="ts" setup>
 import dayjs from "dayjs";
 import {onUnmounted, ref} from "vue";
+
+defineProps<{
+  horizontal?: boolean
+}>()
 
 const dayHan = ['日', '一', '二', '三', '四', '五', "六"]
 
@@ -23,9 +30,9 @@ const dateTime = ref({
 const timer = setInterval(() => {
   const day = dayjs()
   dateTime.value = {
-    time: day.format('HH:mm'),
+    time: day.format('HH:mm:ss'),
     week: dayHan[day.day()],
-    date: day.format('YYYY-MM-DD')
+    date: day.format('YYYY-MM-DD'),
   }
 }, 1000)
 
@@ -48,4 +55,9 @@ onUnmounted(() => {
   .date
     line-height 16px
     font-size 12px
+.horizontal
+  margin-top 35px
+  width 250px
+  font-size: 18px;
+  color: #E6EEFF;
 </style>
