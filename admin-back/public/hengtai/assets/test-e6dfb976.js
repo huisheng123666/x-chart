@@ -1,0 +1,1 @@
+import{d as e,c as t,a as s,f as _,I as a,_ as o}from"./index-d28856c0.js";const c={class:"rotate-num"},n=e({__name:"test",setup(p){return(r,d)=>(_(),t("div",c,[s(a,{num:5999})]))}});const m=o(n,[["__scopeId","data-v-e06e5a0d"]]);export{m as default};
